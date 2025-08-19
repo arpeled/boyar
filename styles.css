@@ -1,62 +1,50 @@
-/* ====== צבע המותג (אפשר לכוונן את ההקס אם תרצה) ====== */
 :root{
-  /* ירוק-טורקיז שדומה מאוד לתמונה; אם תרצה “בדיוק” – החלף ל-HEX שלך */
-  --brand-green: #128b7b;
-  --brand-green-800: #0b5f55;
-  --bubble-blue: #2d66ff;
-  --surface: #ffffff;
-  --ink: #0b1530;
-  --muted: #d7e3ff;
+  --brand-green: #128b7b;        /* רקע עמוד */
+  --brand-green-dark: #0b5f55;   /* כפתור */
+  --user-bubble: #b3e6de;        /* בועת משתמש */
+  --bot-bubble: #ffffff;         /* בועת בוט */
+  --bot-border: #99d4cc;
+  --system-bubble: #e0f5f2;      /* בועת מערכת */
+  --system-text: #0b5f55;
 }
 
 * { box-sizing: border-box; }
 html, body { height: 100%; }
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans Hebrew', 'Heebo', 'Rubik', sans-serif;
+  font-family: 'Heebo', 'Rubik', sans-serif;
   background: var(--brand-green);
   color: #fff;
   display: flex;
   flex-direction: column;
 }
 
-/* ====== Header עם תמונת רקע מלאה ====== */
+/* ====== Header ====== */
 .site-header.hero{
   position: relative;
   width: 100%;
-  min-height: 220px;              /* אפשר להגדיל/להקטין */
-  background-image: url('header.jpg');  /* שים כאן את התמונה שלך בשם header.jpg */
+  min-height: 220px;
+  background-image: url('header.jpg');
   background-size: cover;
-  background-position: center right;    /* לרוב מתאים לעיצוב שסיפקת */
+  background-position: center right;
   background-repeat: no-repeat;
 }
-
-/* שכבת טקסט אופציונלית מעל התמונה */
 .hero-overlay{
   max-width: 1080px;
   margin: 0 auto;
   padding: 28px 20px 36px 20px;
-  text-align: right;              /* יישור לימין */
+  text-align: right;
   color: #ffffff;
   text-shadow: 0 1px 2px rgba(0,0,0,.25);
 }
-.hero-overlay h1{
-  margin: 0 0 6px 0;
-  font-size: 30px;
-  line-height: 1.2;
-}
-.hero-overlay .subtitle{
-  margin: 0;
-  font-size: 16px;
-  color: #eefdf9;
-  opacity: 0.95;
-}
+.hero-overlay h1{ margin:0 0 6px 0; font-size:30px; }
+.hero-overlay .subtitle{ margin:0; font-size:16px; }
 
-/* ====== אזור הצ׳ט ====== */
+/* ====== Chat ====== */
 main { flex: 1; display: flex; }
 .chat {
-  background: #f5f7fb;           /* כרטיס בהיר מעל הרקע הירוק */
-  color: var(--ink);
+  background: #fefefe;
+  color: var(--brand-green-dark);
   border-radius: 16px 16px 0 0;
   max-width: 960px;
   margin: 0 auto;
@@ -68,7 +56,7 @@ main { flex: 1; display: flex; }
   padding: 20px;
   overflow-y: auto;
   flex: 1;
-  direction: rtl;                 /* RTL גם בתוך הבועות */
+  direction: rtl;
   text-align: right;
 }
 .message {
@@ -78,23 +66,22 @@ main { flex: 1; display: flex; }
   border-radius: 16px;
   line-height: 1.5;
   white-space: pre-wrap;
-  word-wrap: break-word;
 }
 .message.user {
   margin-left: auto;
-  background: #d9ecff;
-  border: 1px solid #b9dcff;
+  background: var(--user-bubble);
+  border: 1px solid #88ccc0;
 }
 .message.bot {
   margin-right: auto;
-  background: var(--surface);
-  border: 1px solid #e6e9f2;
+  background: var(--bot-bubble);
+  border: 1px solid var(--bot-border);
 }
 .message.system {
   margin-right: auto;
-  background: #eef2ff;
-  border: 1px dashed #cdd6ff;
-  color: #1b2570;
+  background: var(--system-bubble);
+  border: 1px dashed var(--bot-border);
+  color: var(--system-text);
 }
 
 .composer {
@@ -102,7 +89,7 @@ main { flex: 1; display: flex; }
   gap: 10px;
   padding: 16px 20px;
   border-top: 1px solid #dde3f0;
-  background: var(--surface);
+  background: #fff;
   border-radius: 0 0 16px 16px;
 }
 #input {
@@ -118,7 +105,7 @@ main { flex: 1; display: flex; }
   border-radius: 12px;
   padding: 0 18px;
   font-size: 16px;
-  background: var(--bubble-blue);
+  background: var(--brand-green-dark);
   color: #fff;
   cursor: pointer;
 }
@@ -129,7 +116,7 @@ main { flex: 1; display: flex; }
   max-width: 960px;
   margin: 0 auto;
   padding: 10px 20px 24px 20px;
-  color: var(--muted);
+  color: #e6fffb;
   opacity: 0.95;
   text-align: right;
 }
