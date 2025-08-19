@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>בדיקת קישור ווטסאפ</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>בדיקת קישור ווטסאפ</h1>
+        
+        <div class="test-section">
+            <h3>כך הקישור אמור להיראות:</h3>
+            <div class="message bot">
+                💬 הצטרפו לקבוצת הווטסאפ לעדכונים נוספים: 
+                <a href="https://chat.whatsapp.com/CvzfnGC1zA14qHrbmkb8ki" target="_blank" rel="noopener noreferrer" class="whatsapp-link">💬 הצטרפו לקבוצת הווטסאפ</a>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>בדיקה עם הפונקציה שלנו:</h3>
+            <div id="test-result" class="message bot"></div>
+        </div>
+        
+        <button onclick="testLink()">בדוק קישור</button>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        function testLink() {
+            const testText = '💬 הצטרפו לקבוצת הווטסאפ לעדכונים נוספים: https://chat.whatsapp.com/CvzfnGC1zA14qHrbmkb8ki';
+            
+            console.log('טקסט מקורי:', testText);
+            
+            const processedText = linkifyText(testText);
+            console.log('טקסט מעובד:', processedText);
+            
+            document.getElementById('test-result').innerHTML = processedText;
+        }
+        
+        // הרץ בדיקה אוטומטית
+        window.onload = function() {
+            testLink();
+        };
+    </script>
+    
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            color: #333;
+        }
+        
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        button {
+            background: var(--brand-green);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        button:hover {
+            background: var(--brand-green-dark);
+        }
+    </style>
+</body>
+</html>

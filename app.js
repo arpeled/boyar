@@ -34,17 +34,37 @@ function addMsg(text, who='bot', cls='') {
 
 function cleanBrokenHTML(text) {
   // נקה תגי HTML שבורים שמגיעים מ-n8n
+
+  // הסר תכונות HTML שבורות
   text = text.replace(/target="_blank"\s*/g, '');
-  text = text.replace(/rel="noopener noreferrer"\s*/g, '');
-  text = text.replace(/<a\s+href="([^"]+)"[^>]*>/g, '$1');
-  text = text.replace(/<\/a>/g, '');
-  text = text.replace(/\s+/g, ' '); // נקה רווחים מיותרים
+  text = text.replace(/rel="noopener\s*noreferrer"\s*/g, '');
+  text = text.replace(/class="[^"]*"\s*/g, '');
+
+  // הסר תגי <a> שבורים ושמור רק את הקישור
+  text = text.replace(/<a\s+href="([^"]+)"[^>]*>/gi, '$1');
+  text = text.replace(/<\/a>/gi, '');
+
+  // נקה רווחים מיותרים
+  text = text.replace(/\s+/g, ' ');
+
   return text.trim();
 }
 
 function linkifyText(text) {
   // תחילה נקה תגי HTML שבורים
   text = cleanBrokenHTML(text);
+
+  // טיפול מיוחד בקישורי ווטסאפ שמגיעים עם HTML שבור
+  const whatsappPattern = /.*?(https:\/\/chat\.whatsapp\.com\/[A-Za-z0-9]+).*/g;
+  const whatsappMatch = text.match(whatsappPattern);
+  if (whatsappMatch) {
+    const whatsappUrl = text.match(/https:\/\/chat\.whatsapp\.com\/[A-Za-z0-9]+/);
+    if (whatsappUrl) {
+      // החלף את כל הטקסט בקישור ווטסאפ נקי
+      text = text.replace(/.*?(https:\/\/chat\.whatsapp\.com\/[A-Za-z0-9]+).*/,
+        '💬 הצטרפו לקבוצת הווטסאפ לעדכונים נוספים: $1');
+    }
+  }
 
   // תחילה טפל בקישורי Markdown [טקסט](קישור)
   const markdownLinkRegex = /\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g;
@@ -216,7 +236,9 @@ $form.addEventListener('submit', async (e) => {
 
     // וודא שיש תגובה לפני הוספה
     if (reply && reply.trim()) {
-      addMsg(reply, 'bot');
+      // נקה HTML שבור לפני הצגה
+      const cleanReply = cleanBrokenHTML(reply);
+      addMsg(cleanReply, 'bot');
     } else {
       addMsg('מצטערים, לא קיבלתי תגובה מהשרת. נסו שוב.', 'system');
     }

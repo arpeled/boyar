@@ -28,14 +28,27 @@
     <script src="app.js"></script>
     <script>
         function testCleanup() {
-            const brokenText = '💬 הצטרפו לקבוצת הווטסאפ לעדכונים נוספים: <a href="https://chat.whatsapp.com/CvzfnGC1zA14qHrbmkb8ki" target="_blank" rel="noopener noreferrer';
-            
-            console.log('טקסט מקורי:', brokenText);
-            
-            const cleanedText = linkifyText(brokenText);
-            console.log('טקסט אחרי ניקוי:', cleanedText);
-            
-            document.getElementById('cleaned-html').innerHTML = cleanedText;
+            // דוגמאות שונות של HTML שבור
+            const brokenTexts = [
+                '💬 הצטרפו לקבוצת הווטסאפ לעדכונים נוספים: <a href="https://chat.whatsapp.com/CvzfnGC1zA14qHrbmkb8ki" target="_blank" rel="noopener noreferrer',
+                'target="_blank" rel="noopener הצטרפו לקבוצת הווטסאפ שלנו: <a href="https://chat.whatsapp.com/CvzfnGC1zA14qHrbmkb8ki" class="whatsapp-link',
+                'הצטרפו לקבוצת הווטסאפ https://chat.whatsapp.com/CvzfnGC1zA14qHrbmkb8ki target="_blank" rel="noopener noreferrer"'
+            ];
+
+            let results = '';
+            brokenTexts.forEach((brokenText, index) => {
+                console.log(`טקסט מקורי ${index + 1}:`, brokenText);
+
+                const cleanedText = linkifyText(brokenText);
+                console.log(`טקסט אחרי ניקוי ${index + 1}:`, cleanedText);
+
+                results += `<div style="margin: 10px 0; padding: 10px; border: 1px solid #ccc;">
+                    <strong>דוגמה ${index + 1}:</strong><br>
+                    ${cleanedText}
+                </div>`;
+            });
+
+            document.getElementById('cleaned-html').innerHTML = results;
         }
         
         // הרץ בדיקה אוטומטית
