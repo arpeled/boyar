@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>יום הבוגר – צ׳ט הרשמה</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <img src="logo.svg" alt="Boyar Alumni" class="logo" />
+    <div class="titles">
+      <h1>בואו לתת השראה ביום הבוגר בבויאר 🎉</h1>
+      <p class="subtitle">
+        ביום חמישי, 23.10.2025, בוגרי ובוגרות בויאר מגיעים לפגוש את תלמידי ז׳–י״ב ולשתף בסיפור הדרך, התובנות והמסר שלהם. 
+        הרשמה כאן בצ׳ט – בשיחה חופשית וקלה.
+      </p>
+    </div>
+  </header>
+
+  <main>
+    <section id="chat" class="chat">
+      <div id="messages" class="messages" aria-live="polite"></div>
+      <form id="composer" class="composer">
+        <textarea id="input" rows="2" placeholder="כתבו כאן..."></textarea>
+        <button id="send" type="submit" aria-label="שלח">שליחה</button>
+      </form>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <small>הנתונים ישמשו רק לתיאום ״יום הבוגר״. ✉️</small>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
