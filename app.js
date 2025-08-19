@@ -25,7 +25,7 @@ function setBusy(b) {
 }
 
 async function askN8n(text) {
-  const url = `${N8N_BASE}/rest/v1/chat/${CHAT_WEBHOOK_ID}/messages`;
+  const url = `${N8N_BASE}/webhook/${CHAT_WEBHOOK_ID}/chat`;
   const headers = { 'Content-Type': 'application/json' };
   if (sessionId) headers['x-n8n-chat-session-id'] = sessionId;
 
