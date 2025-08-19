@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        button { padding: 10px 20px; margin: 5px; }
+        #testResults { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Chat Application Test</h1>
+    
+    <div class="test-section info">
+        <h3>Test Configuration</h3>
+        <p><strong>n8n Base URL:</strong> <span id="n8nUrl"></span></p>
+        <p><strong>Webhook ID:</strong> <span id="webhookId"></span></p>
+        <p><strong>Full Endpoint:</strong> <span id="fullEndpoint"></span></p>
+    </div>
+
+    <div class="test-section">
+        <h3>Manual Tests</h3>
+        <button onclick="testConnection()">Test n8n Connection</button>
+        <button onclick="testChatMessage()">Test Chat Message</button>
+        <button onclick="testSessionHandling()">Test Session Handling</button>
+        <button onclick="openMainApp()">Open Main App</button>
+    </div>
+
+    <div id="testResults"></div>
+
+    <script>
+        // Import configuration from main app
+        const N8N_BASE = 'https://arpeled.app.n8n.cloud';
+        const CHAT_WEBHOOK_ID = '1f201093-1564-48ab-81f5-cbba41e87dd6';
+        
+        // Display configuration
+        document.getElementById('n8nUrl').textContent = N8N_BASE;
+        document.getElementById('webhookId').textContent = CHAT_WEBHOOK_ID;
+        document.getElementById('fullEndpoint').textContent = `${N8N_BASE}/webhook/${CHAT_WEBHOOK_ID}/chat`;
+
+        function addTestResult(title, success, message) {
+            const div = document.createElement('div');
+            div.className = `test-section ${success ? 'success' : 'error'}`;
+            div.innerHTML = `<h4>${title}</h4><p>${message}</p>`;
+            document.getElementById('testResults').appendChild(div);
+        }
+
+        async function testConnection() {
+            try {
+                const url = `${N8N_BASE}/webhook/${CHAT_WEBHOOK_ID}/chat`;
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: 'test connection' })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    addTestResult('Connection Test', true, `Successfully connected to n8n. Response: ${JSON.stringify(data)}`);
+                } else {
+                    addTestResult('Connection Test', false, `HTTP ${response.status}: ${response.statusText}`);
+                }
+            } catch (error) {
+                addTestResult('Connection Test', false, `Error: ${error.message}`);
+            }
+        }
+
+        async function testChatMessage() {
+            try {
+                const url = `${N8N_BASE}/webhook/${CHAT_WEBHOOK_ID}/chat`;
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: 'שלום, זה בדיקה של הצ\'ט' })
+                });
+                
+                const sessionId = response.headers.get('x-n8n-chat-session-id');
+                const data = await response.json();
+                
+                addTestResult('Chat Message Test', true, 
+                    `Message sent successfully. Session ID: ${sessionId || 'none'}, Response: ${JSON.stringify(data)}`);
+            } catch (error) {
+                addTestResult('Chat Message Test', false, `Error: ${error.message}`);
+            }
+        }
+
+        async function testSessionHandling() {
+            try {
+                // First message
+                const url = `${N8N_BASE}/webhook/${CHAT_WEBHOOK_ID}/chat`;
+                const response1 = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: 'הודעה ראשונה' })
+                });
+                
+                const sessionId1 = response1.headers.get('x-n8n-chat-session-id');
+                
+                // Second message with session ID
+                const response2 = await fetch(url, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'x-n8n-chat-session-id': sessionId1
+                    },
+                    body: JSON.stringify({ text: 'הודעה שנייה באותה סשן' })
+                });
+                
+                const sessionId2 = response2.headers.get('x-n8n-chat-session-id');
+                
+                if (sessionId1 === sessionId2) {
+                    addTestResult('Session Handling Test', true, `Session maintained correctly. Session ID: ${sessionId1}`);
+                } else {
+                    addTestResult('Session Handling Test', false, `Session not maintained. ID1: ${sessionId1}, ID2: ${sessionId2}`);
+                }
+            } catch (error) {
+                addTestResult('Session Handling Test', false, `Error: ${error.message}`);
+            }
+        }
+
+        function openMainApp() {
+            window.open('index.html', '_blank');
+        }
+    </script>
+</body>
+</html>

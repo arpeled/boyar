@@ -1,0 +1,66 @@
+curl -X OPTIONS "https://arpeled.app.n8n.cloud/webhook/1f201093-1564-48ab-81f5-cbba41e87dd6/chat" \
+  -H "Origin: http://localhost:8000" \
+  -H "Access-Control-Request-Method: POST" \
+  -v
+* Host arpeled.app.n8n.cloud:443 was resolved.
+* IPv6: (none)
+* IPv4: 104.26.13.13
+*   Trying 104.26.13.13:443...
+* Connected to arpeled.app.n8n.cloud (104.26.13.13) port 443
+* ALPN: curl offers h2,http/1.1
+* (304) (OUT), TLS handshake, Client hello (1):
+*  CAfile: /etc/ssl/cert.pem
+*  CApath: none
+* (304) (IN), TLS handshake, Server hello (2):
+* (304) (IN), TLS handshake, Unknown (8):
+* (304) (IN), TLS handshake, Certificate (11):
+* (304) (IN), TLS handshake, CERT verify (15):
+* (304) (IN), TLS handshake, Finished (20):
+* (304) (OUT), TLS handshake, Finished (20):
+* SSL connection using TLSv1.3 / AEAD-CHACHA20-POLY1305-SHA256 / [blank] / UNDEF
+* ALPN: server accepted h2
+* Server certificate:
+*  subject: CN=*.app.n8n.cloud
+*  start date: Jul 29 16:52:11 2025 GMT
+*  expire date: Oct 27 17:52:10 2025 GMT
+*  subjectAltName: host "arpeled.app.n8n.cloud" matched cert's "*.app.n8n.cloud"
+*  issuer: C=US; O=Google Trust Services; CN=WE1
+*  SSL certificate verify ok.
+* using HTTP/2
+* [HTTP/2] [1] OPENED stream for https://arpeled.app.n8n.cloud/webhook/1f201093-1564-48ab-81f5-cbba41e87dd6/chat
+* [HTTP/2] [1] [:method: OPTIONS]
+* [HTTP/2] [1] [:scheme: https]
+* [HTTP/2] [1] [:authority: arpeled.app.n8n.cloud]
+* [HTTP/2] [1] [:path: /webhook/1f201093-1564-48ab-81f5-cbba41e87dd6/chat]
+* [HTTP/2] [1] [user-agent: curl/8.7.1]
+* [HTTP/2] [1] [accept: */*]
+* [HTTP/2] [1] [origin: http://localhost:8000]
+* [HTTP/2] [1] [access-control-request-method: POST]
+> OPTIONS /webhook/1f201093-1564-48ab-81f5-cbba41e87dd6/chat HTTP/2
+> Host: arpeled.app.n8n.cloud
+> User-Agent: curl/8.7.1
+> Accept: */*
+> Origin: http://localhost:8000
+> Access-Control-Request-Method: POST
+>
+* Request completely sent off
+< HTTP/2 204
+< date: Tue, 19 Aug 2025 19:05:32 GMT
+< content-type: text/plain; charset=utf-8
+< server: cloudflare
+< cf-ray: 971bec4a184bc666-TLV
+< cf-cache-status: DYNAMIC
+< access-control-allow-origin: https://arpeled.github.io
+< etag: W/"2-vyGp6PvFo4RvsFtPoIWeCReyIC8"
+< strict-transport-security: max-age=15552000; includeSubDomains
+< vary: Accept-Encoding
+< access-control-allow-methods: OPTIONS, GET, POST
+< access-control-max-age: 300
+< referrer-policy: same-origin
+< x-content-type-options: nosniff
+< x-frame-options: SAMEORIGIN
+< report-to: {"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v4?s=rc%2Fi%2Bte4ux1DxjihNbSDF0%2BrKfvDnX3vLWQB41Yc3zzEQ%2FfJfhKx4M0UBDlOavmq08CvGWpXxksdkjPq4FodYYG5Bt9Zl0tdrt7me%2FxAsD1cVs0Cj2Zuz51WF3nF1G8tlkzGrq2Dfg%3D%3D"}],"group":"cf-nel","max_age":604800}
+< nel: {"success_fraction":0,"report_to":"cf-nel","max_age":604800}
+< server-timing: cfL4;desc="?proto=TCP&rtt=7067&min_rtt=6627&rtt_var=2712&sent=12&recv=13&lost=0&retrans=0&sent_bytes=2884&recv_bytes=673&delivery_rate=587732&cwnd=253&unsent_bytes=0&cid=c09914846a8e33cc&ts=106&x=0"
+<
+* Connection #0 to host arpeled.app.n8n.cloud left intact

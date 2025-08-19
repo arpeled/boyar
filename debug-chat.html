@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Chat</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; direction: rtl; }
+        .debug-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; background: #f9f9f9; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .warning { background-color: #fff3cd; border-color: #ffeaa7; }
+        button { padding: 10px 20px; margin: 5px; }
+        textarea { width: 100%; height: 100px; margin: 10px 0; }
+        pre { background: #f4f4f4; padding: 10px; overflow-x: auto; }
+        .message { margin: 10px 0; padding: 10px; border-radius: 8px; }
+        .message.user { background: #e3f2fd; text-align: left; }
+        .message.bot { background: #f3e5f5; text-align: right; }
+        .message.system { background: #fff3e0; text-align: center; }
+    </style>
+</head>
+<body>
+    <h1>Debug Chat Interface</h1>
+    
+    <div class="debug-section">
+        <h3>Configuration Status</h3>
+        <p><strong>n8n Base:</strong> <span id="configBase"></span></p>
+        <p><strong>Webhook ID:</strong> <span id="configWebhook"></span></p>
+        <p><strong>Full URL:</strong> <span id="configUrl"></span></p>
+        <p><strong>Session ID:</strong> <span id="sessionInfo">None</span></p>
+    </div>
+
+    <div class="debug-section">
+        <h3>Quick Tests</h3>
+        <button onclick="testEndpoint()">Test Endpoint</button>
+        <button onclick="testCORS()">Test CORS</button>
+        <button onclick="clearSession()">Clear Session</button>
+        <button onclick="clearLogs()">Clear Logs</button>
+    </div>
+
+    <div class="debug-section">
+        <h3>Send Message</h3>
+        <textarea id="messageInput" placeholder="כתבו הודעה כאן...">שלום, זה בדיקה של הצ'ט</textarea>
+        <br>
+        <button onclick="sendMessage()">Send Message</button>
+    </div>
+
+    <div id="messages"></div>
+    <div id="debugLogs"></div>
+
+    <script>
+        const N8N_BASE = 'https://arpeled.app.n8n.cloud';
+        const CHAT_WEBHOOK_ID = '1f201093-1564-48ab-81f5-cbba41e87dd6';
+        const SESSION_KEY = 'n8n_chat_session_id';
+        
+        let sessionId = localStorage.getItem(SESSION_KEY) || '';
+        
+        // Update UI with config
+        document.getElementById('configBase').textContent = N8N_BASE;
+        document.getElementById('configWebhook').textContent = CHAT_WEBHOOK_ID;
+        document.getElementById('configUrl').textContent = `${N8N_BASE}/webhook/${CHAT_WEBHOOK_ID}/chat`;
+        document.getElementById('sessionInfo').textContent = sessionId || 'None';
+
+        function log(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `debug-section ${type}`;
+            div.innerHTML = `<strong>[${new Date().toLocaleTimeString()}]</strong> ${message}`;
+            document.getElementById('debugLogs').appendChild(div);
+            console.log(`[${type.toUpperCase()}]`, message);
+        }
+
+        function addMessage(text, sender = 'system') {
+            const div = document.createElement('div');
+            div.className = `message ${sender}`;
+            div.innerHTML = `<strong>${sender}:</strong> ${text}`;
+            document.getElementById('messages').appendChild(div);
+        }
+
+        async function testEndpoint() {
+            log('Testing endpoint connectivity...', 'info');
+
+            try {
+                const url = `${N8N_BASE}/webhook/${CHAT_WEBHOOK_ID}/chat`;
+
+                // First test - simple request
+                log('Test 1: Basic POST request', 'info');
+                const response1 = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: 'connection test' })
+                });
+
+                log(`Response status: ${response1.status} ${response1.statusText}`, response1.ok ? 'success' : 'error');
+                log(`CORS headers: ${response1.headers.get('access-control-allow-origin') || 'None'}`, 'info');
+                log(`All headers: ${JSON.stringify([...response1.headers.entries()])}`, 'info');
+
+                const responseText1 = await response1.text();
+                log(`Response body: ${responseText1}`, response1.ok ? 'success' : 'error');
+
+                // Test 2 - OPTIONS preflight request
+                log('Test 2: OPTIONS preflight request', 'info');
+                try {
+                    const response2 = await fetch(url, {
+                        method: 'OPTIONS',
+                        headers: {
+                            'Origin': 'http://localhost:8000',
+                            'Access-Control-Request-Method': 'POST',
+                            'Access-Control-Request-Headers': 'Content-Type'
+                        }
+                    });
+                    log(`OPTIONS status: ${response2.status}`, response2.ok ? 'success' : 'error');
+                    log(`OPTIONS CORS: ${response2.headers.get('access-control-allow-origin') || 'None'}`, 'info');
+                } catch (e) {
+                    log(`OPTIONS error: ${e.message}`, 'error');
+                }
+
+            } catch (error) {
+                log(`Network error: ${error.message}`, 'error');
+            }
+        }
+
+        async function sendMessage() {
+            const text = document.getElementById('messageInput').value.trim();
+            if (!text) {
+                log('No message to send', 'warning');
+                return;
+            }
+            
+            addMessage(text, 'user');
+            log(`Sending message: "${text}"`, 'info');
+            
+            try {
+                const url = `${N8N_BASE}/webhook/${CHAT_WEBHOOK_ID}/chat`;
+                const headers = { 'Content-Type': 'application/json' };
+
+                // Generate session ID if we don't have one
+                if (!sessionId) {
+                    sessionId = 'session-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+                    localStorage.setItem(SESSION_KEY, sessionId);
+                    document.getElementById('sessionInfo').textContent = sessionId;
+                    log(`Generated new session ID: ${sessionId}`, 'info');
+                }
+
+                // Prepare request body with sessionId (n8n expects 'chatInput', not 'text')
+                const requestBody = { chatInput: text, sessionId };
+                log(`Using session ID: ${sessionId}`, 'info');
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers,
+                    body: JSON.stringify(requestBody)
+                });
+                
+                // Check for session ID in response
+                const newSessionId = response.headers.get('x-n8n-chat-session-id');
+                if (newSessionId && newSessionId !== sessionId) {
+                    sessionId = newSessionId;
+                    localStorage.setItem(SESSION_KEY, sessionId);
+                    document.getElementById('sessionInfo').textContent = sessionId;
+                    log(`New session ID received: ${sessionId}`, 'success');
+                }
+                
+                log(`Response status: ${response.status}`, response.ok ? 'success' : 'error');
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    log(`Response data: ${JSON.stringify(data, null, 2)}`, 'success');
+                    
+                    const botMessage = data.output ||  // n8n chat trigger returns 'output'
+                                    data.text ||
+                                    (Array.isArray(data.messages) ? data.messages.map(m => m.text).join('\n') : '') ||
+                                    data.message ||
+                                    JSON.stringify(data);
+                    
+                    addMessage(botMessage, 'bot');
+                } else {
+                    const errorText = await response.text();
+                    log(`Error response: ${errorText}`, 'error');
+                    addMessage(`שגיאה: ${response.status} - ${errorText}`, 'system');
+                }
+                
+            } catch (error) {
+                log(`Error sending message: ${error.message}`, 'error');
+                addMessage(`שגיאת רשת: ${error.message}`, 'system');
+            }
+        }
+
+        function clearSession() {
+            sessionId = '';
+            localStorage.removeItem(SESSION_KEY);
+            document.getElementById('sessionInfo').textContent = 'None';
+            log('Session cleared', 'info');
+        }
+
+        function clearLogs() {
+            document.getElementById('debugLogs').innerHTML = '';
+            document.getElementById('messages').innerHTML = '';
+        }
+
+        async function testCORS() {
+            log('Testing CORS configuration...', 'info');
+
+            const url = `${N8N_BASE}/webhook/${CHAT_WEBHOOK_ID}/chat`;
+
+            // Test different origins
+            const origins = [
+                'http://localhost:8000',
+                'https://arpeled.github.io',
+                'http://localhost:63343'
+            ];
+
+            for (const origin of origins) {
+                try {
+                    log(`Testing origin: ${origin}`, 'info');
+
+                    // Test OPTIONS request
+                    const optionsResponse = await fetch(url, {
+                        method: 'OPTIONS',
+                        headers: {
+                            'Origin': origin,
+                            'Access-Control-Request-Method': 'POST',
+                            'Access-Control-Request-Headers': 'Content-Type'
+                        }
+                    });
+
+                    const allowedOrigin = optionsResponse.headers.get('access-control-allow-origin');
+                    const allowedMethods = optionsResponse.headers.get('access-control-allow-methods');
+
+                    log(`  OPTIONS ${optionsResponse.status}: Origin=${allowedOrigin}, Methods=${allowedMethods}`,
+                        allowedOrigin === origin ? 'success' : 'warning');
+
+                } catch (e) {
+                    log(`  Error testing ${origin}: ${e.message}`, 'error');
+                }
+            }
+        }
+
+        // Initial test
+        log('Debug interface loaded', 'success');
+    </script>
+</body>
+</html>

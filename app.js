@@ -32,13 +32,30 @@ function addMsg(text, who='bot', cls='') {
   return div; // החזר את האלמנט כדי שנוכל לעדכן אותו מאוחר יותר
 }
 
+function cleanBrokenHTML(text) {
+  // נקה תגי HTML שבורים שמגיעים מ-n8n
+  text = text.replace(/target="_blank"\s*/g, '');
+  text = text.replace(/rel="noopener noreferrer"\s*/g, '');
+  text = text.replace(/<a\s+href="([^"]+)"[^>]*>/g, '$1');
+  text = text.replace(/<\/a>/g, '');
+  text = text.replace(/\s+/g, ' '); // נקה רווחים מיותרים
+  return text.trim();
+}
+
 function linkifyText(text) {
+  // תחילה נקה תגי HTML שבורים
+  text = cleanBrokenHTML(text);
+
   // תחילה טפל בקישורי Markdown [טקסט](קישור)
   const markdownLinkRegex = /\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g;
   text = text.replace(markdownLinkRegex, (match, linkText, url) => {
     // בדוק אם זה קישור לתמונות Google Photos
     if (url.includes('photos.app.goo.gl') || url.includes('photos.google.com')) {
       return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="photo-link">📸 ${linkText}</a>`;
+    }
+    // בדוק אם זה קישור לווטסאפ
+    if (url.includes('chat.whatsapp.com') || url.includes('wa.me')) {
+      return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="whatsapp-link">💬 ${linkText}</a>`;
     }
     return `<a href="${url}" target="_blank" rel="noopener noreferrer">${linkText}</a>`;
   });
@@ -72,7 +89,7 @@ function linkifyText(text) {
 
     // בדוק אם זה קישור לווטסאפ
     if (cleanUrl.includes('chat.whatsapp.com') || cleanUrl.includes('wa.me')) {
-      return `<a href="${cleanUrl}" target="_blank" rel="noopener noreferrer" class="whatsapp-link">💬 הצטרף לווטסאפ</a>${punctuation}`;
+      return `<a href="${cleanUrl}" target="_blank" rel="noopener noreferrer" class="whatsapp-link">💬 הצטרפו לקבוצת הווטסאפ</a>${punctuation}`;
     }
 
     // בדוק אם זה קישור לדוא"ל

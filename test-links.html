@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>בדיקת קישורים</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body { padding: 20px; background: #f5f5f5; }
+        .test-container { max-width: 600px; margin: 0 auto; }
+        .test-message { margin: 20px 0; }
+        button { padding: 10px 20px; margin: 10px; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>בדיקת קישורים בהודעות</h1>
+        
+        <button onclick="testMarkdownLink()">בדוק קישור Markdown</button>
+        <button onclick="testRegularLink()">בדוק קישור רגיל</button>
+        <button onclick="testEmail()">בדוק דוא"ל</button>
+        <button onclick="testPhone()">בדוק טלפון</button>
+        <button onclick="clearTests()">נקה</button>
+        
+        <div id="test-results"></div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        function testMarkdownLink() {
+            const text = 'בשמחה! הנה קישור לגלריית תמונות: [גלריה](https://photos.app.goo.gl/11S6sPaNu7hvTKbF9). תהנה!';
+            addTestMessage(text);
+        }
+        
+        function testRegularLink() {
+            const text = 'כאן יש קישור רגיל: https://photos.app.goo.gl/11S6sPaNu7hvTKbF9 לתמונות.';
+            addTestMessage(text);
+        }
+        
+        function testEmail() {
+            const text = 'ניתן ליצור קשר בדוא"ל: arik@sys-it.co.il או בטלפון.';
+            addTestMessage(text);
+        }
+        
+        function testPhone() {
+            const text = 'מספר הטלפון שלי: 050-9019005 או +972-50-9019005.';
+            addTestMessage(text);
+        }
+        
+        function addTestMessage(text) {
+            const container = document.getElementById('test-results');
+            const div = document.createElement('div');
+            div.className = 'message bot test-message';
+            div.innerHTML = linkifyText(text);
+            container.appendChild(div);
+        }
+        
+        function clearTests() {
+            document.getElementById('test-results').innerHTML = '';
+        }
+        
+        // Override the $messages variable for testing
+        window.$messages = document.getElementById('test-results');
+    </script>
+</body>
+</html>

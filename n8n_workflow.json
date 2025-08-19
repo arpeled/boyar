@@ -1,0 +1,352 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "initialMessages": "היי וברוכים הבאים לצ׳ט ההרשמה ליום הבוגר של בויאר 🎉  \nב-23.10.2025 בוגרים ובוגרות חוזרים לספר לתלמידים על הדרך שלהם – מהכיתה בבויאר ועד למה שאתם עושים היום.  \nאני כאן כדי לעזור לכם להירשם: נבקש כמה פרטים בסיסיים, וגם נשמח שתספרו בחופשיות על הנושא או הסיפור שתרצו לשתף מול תלמידי ז׳-י״ב.  \nבסוף אני אסכם את הדברים ואעביר לעמותת הבוגרים כדי שנוכל לתאם אתכם.  \nמוכנים להתחיל?",
+        "options": {
+          "allowedOrigins": "http://localhost:8000, https://arpeled.github.io, http://localhost:63343",
+          "subtitle": "ביום חמישי, 23.10.2025, בית הספר בויאר פותח את שעריו לבוגרים ובוגרות שמגיעים לספר את סיפור הדרך שלהם – מהלימודים ועד לקריירה, לחלוק תובנות מקצועיות ואישיות, ולהעניק השראה לתלמידים מכיתה ז׳ ועד י״ב. זה יכול להיות מפגש כיתתי אינטימי או הרצאה לשכבה שלמה – הכול תלוי בנושא שתבחרו להביא.",
+          "title": "בואו לתת השראה ביום הבוגר בבויאר 🎉"
+        }
+      },
+      "id": "98b1bb1a-f3ea-4334-8bef-be62b7fa42db",
+      "name": "Registration Chat Interface",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        1120,
+        160
+      ],
+      "webhookId": "1f201093-1564-48ab-81f5-cbba41e87dd6"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "id",
+          "value": "gpt-4o"
+        },
+        "options": {
+          "maxTokens": 1200,
+          "temperature": 0.7
+        }
+      },
+      "id": "a0a9de96-4299-4d60-a1da-657b1f50f69b",
+      "name": "OpenAI Chat Model1",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1472,
+        384
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "fPdsf3I2j7ogOJ3k",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 10
+      },
+      "id": "595c645c-7001-4a3b-a6e8-0ba97d55a940",
+      "name": "Chat Memory1",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        1600,
+        384
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1W_qWmCCkODD8oOcjaPK5cOd3ad-YoZSrSt6NlqUskFo",
+          "mode": "list",
+          "cachedResultName": "יום הבוגר 2025 (Responses)",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1W_qWmCCkODD8oOcjaPK5cOd3ad-YoZSrSt6NlqUskFo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1980078529,
+          "mode": "list",
+          "cachedResultName": "Form Responses 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1W_qWmCCkODD8oOcjaPK5cOd3ad-YoZSrSt6NlqUskFo/edit#gid=1980078529"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Timestamp": "={{ $now() }}",
+            "שם מלא": "={{ $fromAI('full_name') }}",
+            "מספר טלפון": "={{ $fromAI('phone_number') }}",
+            "דואר אלקטרוני": "={{ $fromAI('email') }}",
+            "שנת סיום/ מחזור": "={{ $fromAI('graduation_year') }}",
+            "תאר/י בקצרה על מה את/ה רוצה לדבר": "={{ $fromAI('topic_description') }}",
+            "הערות/מלל חופשי": "={{ $fromAI('notes') }}",
+            "Email Address": "={{ $fromAI('email_address') }}",
+            "מקצוע או עיסוק נוכחי": "={{ $fromAI('current_profession') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Timestamp",
+              "displayName": "Timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "שם מלא",
+              "displayName": "שם מלא",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "מספר טלפון",
+              "displayName": "מספר טלפון",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "דואר אלקטרוני",
+              "displayName": "דואר אלקטרוני",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "שנת סיום/ מחזור",
+              "displayName": "שנת סיום/ מחזור",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "תאר/י בקצרה על מה את/ה רוצה לדבר",
+              "displayName": "תאר/י בקצרה על מה את/ה רוצה לדבר",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "הערות/מלל חופשי",
+              "displayName": "הערות/מלל חופשי",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email Address",
+              "displayName": "Email Address",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "מקצוע או עיסוק נוכחי",
+              "displayName": "מקצוע או עיסוק נוכחי",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "full_name",
+              "displayName": "full_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "phone_number",
+              "displayName": "phone_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "graduation_year",
+              "displayName": "graduation_year",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "topic_description",
+              "displayName": "topic_description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "notes",
+              "displayName": "notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "email_address",
+              "displayName": "email_address",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "current_profession",
+              "displayName": "current_profession",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "aecea12b-1939-4b0b-af76-0a197221dd68",
+      "name": "Google Sheets Registration Tool1",
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        1728,
+        384
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "XvM6M75ACqi4DWsB",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "את/ה סוכן/ית רישום לבוגרי בויאר ל\"יום הבוגר – נותנים השראה לדור הבא\".\\nהמטרה: חוויית רישום מהנה, שיחה חופשית ומכבדת, ואיסוף נתונים מלאים בצורה מדויקת לגיליון Google Sheets.\\n\\nסגנון ושפה:\\n- דבר/י בעברית זורמת, חמה ומזמינה. קצר/ה-אך-מכוון/ת.\\n- עודד/י כתיבה חופשית והכוונה עדינה (לא טופס יבש).\\n\\nמה לאסוף (ולוודא בסוף):\\n- שם מלא, מספר טלפון, דוא\"ל, שנת סיום/ מחזור, מקצוע או עיסוק נוכחי.\\n- תיאור חופשי של הנושא (\"תאר/י בקצרה על מה את/ה רוצה לדבר\") + הערות/מלל חופשי.\\n\\nאחרי סיכום ואישור פרטיות (\"מאשר/ת שניצור קשר?\"), קרא/י לכלי: **Google Sheets Registration Tool** עם מיפוי שדות לפי שמות העמודות המדויקים הבאים: \\\"שם מלא\\\", \\\"מספר טלפון\\\", \\\"דואר אלקטרוני\\\", \\\"שנת סיום/ מחזור\\\", \\\"תאר/י בקצרה על מה את/ה רוצה לדבר\\\", \\\"הערות/מלל חופשי\\\", \\\"Email Address\\\", \\\"מקצוע או עיסוק נוכחי\\\". ערך ה-Email Address זהה ל\"דואר אלקטרוני\". אל תוסיף/י עמודות שאינן קיימות.\\n\\nבקרת תקינות:\\n- אימייל חייב לכלול @ ו- . בדומיין.\\n- טלפון: 9–12 ספרות, ניתן +972/0.\\n- שנת סיום: 4 ספרות. אם חסר נתון קריטי – בקש/י בנימוס.\\n\\nתמונות השראה (אופציונלי): הצע/י קישור לגלריה: https://photos.app.goo.gl/11S6sPaNu7hvTKbF9\\n\\nבתשובה האחרונה לבוגר/ת:\\n1) סיכום קצר קריא.\\n2) אשר/י שנשמר לגיליון.\\n3) הודעת תודה ונתיב להמשך."
+        }
+      },
+      "id": "04c972ac-702f-4b34-968f-79f236e0456a",
+      "name": "Registration Agent1",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        1536,
+        160
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Registration Chat Interface": {
+      "main": [
+        [
+          {
+            "node": "Registration Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Registration Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chat Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "Registration Agent1",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets Registration Tool1": {
+      "ai_tool": [
+        [
+          {
+            "node": "Registration Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "3b280d00-6a8d-4376-9adb-b432d95b3aab",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "20246b2ced7dc3eee554ff53193a5a30fc0d7be35dfd5aa20418a05b3644e536"
+  },
+  "id": "4GbRVcj2x6rlxeTR",
+  "tags": []
+}

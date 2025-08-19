@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>בדיקת ניקוי HTML</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>בדיקת ניקוי HTML שבור</h1>
+        
+        <div class="test-section">
+            <h3>טקסט עם HTML שבור (כמו שמגיע מ-n8n):</h3>
+            <div id="broken-html" class="message bot">
+                💬 הצטרפו לקבוצת הווטסאפ לעדכונים נוספים: <a href="https://chat.whatsapp.com/CvzfnGC1zA14qHrbmkb8ki" target="_blank" rel="noopener noreferrer
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>אחרי ניקוי וטיפול:</h3>
+            <div id="cleaned-html" class="message bot"></div>
+        </div>
+        
+        <button onclick="testCleanup()">בדוק ניקוי</button>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        function testCleanup() {
+            const brokenText = '💬 הצטרפו לקבוצת הווטסאפ לעדכונים נוספים: <a href="https://chat.whatsapp.com/CvzfnGC1zA14qHrbmkb8ki" target="_blank" rel="noopener noreferrer';
+            
+            console.log('טקסט מקורי:', brokenText);
+            
+            const cleanedText = linkifyText(brokenText);
+            console.log('טקסט אחרי ניקוי:', cleanedText);
+            
+            document.getElementById('cleaned-html').innerHTML = cleanedText;
+        }
+        
+        // הרץ בדיקה אוטומטית
+        window.onload = function() {
+            testCleanup();
+        };
+    </script>
+    
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            color: #333;
+        }
+        
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        button {
+            background: var(--brand-green);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        button:hover {
+            background: var(--brand-green-dark);
+        }
+    </style>
+</body>
+</html>
