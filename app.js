@@ -14,7 +14,11 @@ let sessionId = localStorage.getItem(SESSION_KEY) || '';
 function addMsg(text, who='bot', cls='') {
   const div = document.createElement('div');
   div.className = `message ${who} ${cls}`;
-  div.textContent = text;
+
+  // המר קישורים לקישורים לחיצים
+  const linkifiedText = linkifyText(text);
+  div.innerHTML = linkifiedText;
+
   $messages.appendChild(div);
 
   // גלילה חלקה למטה
@@ -26,6 +30,69 @@ function addMsg(text, who='bot', cls='') {
   }, 100);
 
   return div; // החזר את האלמנט כדי שנוכל לעדכן אותו מאוחר יותר
+}
+
+function linkifyText(text) {
+  // תחילה טפל בקישורי Markdown [טקסט](קישור)
+  const markdownLinkRegex = /\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g;
+  text = text.replace(markdownLinkRegex, (match, linkText, url) => {
+    // בדוק אם זה קישור לתמונות Google Photos
+    if (url.includes('photos.app.goo.gl') || url.includes('photos.google.com')) {
+      return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="photo-link">📸 ${linkText}</a>`;
+    }
+    return `<a href="${url}" target="_blank" rel="noopener noreferrer">${linkText}</a>`;
+  });
+
+  // טפל בכתובות דוא"ל
+  const emailRegex = /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g;
+  text = text.replace(emailRegex, (email) => {
+    return `<a href="mailto:${email}" class="email-link">📧 ${email}</a>`;
+  });
+
+  // טפל במספרי טלפון ישראליים
+  const phoneRegex = /(0\d{1,2}-?\d{7}|05\d-?\d{7}|\+972-?\d{1,2}-?\d{7})/g;
+  text = text.replace(phoneRegex, (phone) => {
+    const cleanPhone = phone.replace(/[^\d+]/g, '');
+    return `<a href="tel:${cleanPhone}" class="phone-link">📞 ${phone}</a>`;
+  });
+
+  // אחר כך טפל בקישורים רגילים
+  const urlRegex = /(https?:\/\/[^\s\)]+)/g;
+
+  // החלף קישורים בתגי <a>
+  return text.replace(urlRegex, (url) => {
+    // נקה סוגריים או סימני פיסוק בסוף הקישור
+    const cleanUrl = url.replace(/[.,;:!?)\]]+$/, '');
+    const punctuation = url.substring(cleanUrl.length);
+
+    // בדוק אם זה קישור לתמונות Google Photos
+    if (cleanUrl.includes('photos.app.goo.gl') || cleanUrl.includes('photos.google.com')) {
+      return `<a href="${cleanUrl}" target="_blank" rel="noopener noreferrer" class="photo-link">📸 צפה בגלריית תמונות</a>${punctuation}`;
+    }
+
+    // בדוק אם זה קישור לווטסאפ
+    if (cleanUrl.includes('chat.whatsapp.com') || cleanUrl.includes('wa.me')) {
+      return `<a href="${cleanUrl}" target="_blank" rel="noopener noreferrer" class="whatsapp-link">💬 הצטרף לווטסאפ</a>${punctuation}`;
+    }
+
+    // בדוק אם זה קישור לדוא"ל
+    if (cleanUrl.includes('mailto:')) {
+      return `<a href="${cleanUrl}" class="email-link">📧 שלח דוא"ל</a>${punctuation}`;
+    }
+
+    // בדוק אם זה קישור לטלפון
+    if (cleanUrl.includes('tel:')) {
+      return `<a href="${cleanUrl}" class="phone-link">📞 התקשר</a>${punctuation}`;
+    }
+
+    // קישורים רגילים - קצר אותם אם הם ארוכים
+    let displayUrl = cleanUrl;
+    if (cleanUrl.length > 50) {
+      displayUrl = cleanUrl.substring(0, 47) + '...';
+    }
+
+    return `<a href="${cleanUrl}" target="_blank" rel="noopener noreferrer" title="${cleanUrl}">${displayUrl}</a>${punctuation}`;
+  });
 }
 
 function setBusy(b) {
@@ -86,7 +153,29 @@ async function askN8n(text) {
 }
 
 // הודעת פתיחה ללקוח
-addMsg('ברוכים הבאים לצ׳ט ההרשמה ליום הבוגר של בויאר! 🎓 כתבו בחופשיות על מה תרצו לדבר ואני אסכם הכל להרשמה.', 'system');
+const welcomeMessage = `ברוכים הבאים לצ׳ט ההרשמה ליום הבוגר של בויאר! 🎓
+
+כתבו בחופשיות על מה תרצו לדבר ואני אסכם הכל להרשמה.
+
+📝 מעדיפים טופס רגיל? <a href="https://docs.google.com/forms/d/e/1FAIpQLSfozRUUoVhr2R07shWLouTc2WPaq-rmyEKejdUQM-P6Od-q9A/viewform" target="_blank" rel="noopener noreferrer">לחצו כאן להרשמה בטופס</a>
+
+💬 <a href="https://chat.whatsapp.com/CvzfnGC1zA14qHrbmkb8ki" target="_blank" rel="noopener noreferrer" class="whatsapp-link">הצטרפו לקבוצת הווטסאפ</a>
+
+📞 לשאלות או בירורים ניתן גם לפנות לרינה תורג'מן <a href="tel:0542122331" class="phone-link">0542122331</a>`;
+
+// יצירת הודעת מערכת עם HTML
+const div = document.createElement('div');
+div.className = 'message system';
+div.innerHTML = welcomeMessage.replace(/\n/g, '<br>');
+$messages.appendChild(div);
+
+// גלילה למטה
+setTimeout(() => {
+  $messages.scrollTo({
+    top: $messages.scrollHeight,
+    behavior: 'smooth'
+  });
+}, 100);
 
 $form.addEventListener('submit', async (e) => {
   e.preventDefault();

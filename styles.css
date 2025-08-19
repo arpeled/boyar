@@ -38,7 +38,22 @@ body {
   text-shadow: 0 1px 2px rgba(0,0,0,.25);
 }
 .hero-overlay h1{ margin:0 0 6px 0; font-size:30px; }
-.hero-overlay .subtitle{ margin:0; font-size:16px; }
+.hero-overlay .subtitle{
+  margin:0;
+  font-size:16px;
+  line-height: 1.4;
+}
+.hero-overlay .subtitle strong {
+  font-size: 18px;
+  color: #fff;
+  text-shadow: 0 2px 4px rgba(0,0,0,.4);
+}
+.hero-overlay .subtitle .highlight {
+  background: rgba(255,255,255,0.2);
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-weight: 500;
+}
 
 /* ====== Chat ====== */
 main { flex: 1; display: flex; }
@@ -85,6 +100,91 @@ main { flex: 1; display: flex; }
   0%, 100% { opacity: 0.6; }
   50% { opacity: 1; }
 }
+
+/* עיצוב קישורים */
+.message a {
+  color: var(--brand-green-dark);
+  text-decoration: underline;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.message a:hover {
+  color: var(--brand-green);
+  text-decoration: none;
+}
+
+.message a.photo-link {
+  background: linear-gradient(135deg, var(--brand-green), var(--brand-green-dark));
+  color: white;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 20px;
+  display: inline-block;
+  margin: 4px 0;
+  font-size: 14px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.message a.photo-link:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(18, 139, 123, 0.3);
+  color: white;
+}
+
+.message a.email-link {
+  background: linear-gradient(135deg, #4285f4, #34a853);
+  color: white;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 20px;
+  display: inline-block;
+  margin: 4px 0;
+  font-size: 14px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.message a.email-link:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(66, 133, 244, 0.3);
+  color: white;
+}
+
+.message a.phone-link {
+  background: linear-gradient(135deg, #34a853, #137333);
+  color: white;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 20px;
+  display: inline-block;
+  margin: 4px 0;
+  font-size: 14px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.message a.phone-link:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(52, 168, 83, 0.3);
+  color: white;
+}
+
+.message a.whatsapp-link {
+  background: linear-gradient(135deg, #25d366, #128c7e);
+  color: white;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 20px;
+  display: inline-block;
+  margin: 4px 0;
+  font-size: 14px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.message a.whatsapp-link:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+  color: white;
+}
 .message.user {
   margin-left: auto;
   background: var(--user-bubble);
@@ -100,6 +200,25 @@ main { flex: 1; display: flex; }
   background: var(--system-bubble);
   border: 1px dashed var(--bot-border);
   color: var(--system-text);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.message.system a {
+  color: var(--brand-green-dark);
+  font-weight: 600;
+  background: rgba(18, 139, 123, 0.1);
+  padding: 4px 8px;
+  border-radius: 6px;
+  text-decoration: none;
+  border: 1px solid rgba(18, 139, 123, 0.3);
+  transition: all 0.2s ease;
+}
+
+.message.system a:hover {
+  background: var(--brand-green-dark);
+  color: white;
+  transform: translateY(-1px);
 }
 
 .composer {
