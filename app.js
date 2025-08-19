@@ -1,7 +1,7 @@
 // --- Configuration ---
 // שים כאן את הפרטים של ה-n8n שלך
 const N8N_BASE = 'https://arpeled.app.n8n.cloud'; // כתובת ה-n8n
-const CHAT_WEBHOOK_ID = 'YOUR_WEBHOOK_ID_HERE';   // ה-webhookId של ה-Chat Trigger
+const CHAT_WEBHOOK_ID = '1f201093-1564-48ab-81f5-cbba41e87dd6';   // ה-webhookId של ה-Chat Trigger
 
 const $messages = document.getElementById('messages');
 const $form = document.getElementById('composer');
