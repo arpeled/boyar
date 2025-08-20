@@ -34,11 +34,30 @@
 
   <footer class="site-footer">
     <small>הנתונים ישמשו רק לתיאום ״יום הבוגר״. ✉️</small>
-    <p>
-      <a href="privacy.html">מדיניות פרטיות</a> | 
-    </p>
+    <div style="margin-top:1em;">
+      <label>
+        <input type="checkbox" id="accept-privacy" />
+        אני מאשר/ת שקראתי ואני מקבל/ת את <span style="font-weight:bold;">מדיניות הפרטיות</span>
+      </label>
+      <p id="privacy-link" style="display:none; margin:0.5em 0 0 0;">
+        <a href="privacy.html">לקריאת מדיניות הפרטיות</a>
+      </p>
+    </div>
   </footer>
 
   <script src="app.js"></script>
+</body>
+</html>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var checkbox = document.getElementById('accept-privacy');
+  var link = document.getElementById('privacy-link');
+  if (checkbox && link) {
+    checkbox.addEventListener('change', function() {
+      link.style.display = checkbox.checked ? 'block' : 'none';
+    });
+  }
+});
+</script>
 </body>
 </html>
