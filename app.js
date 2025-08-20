@@ -10,6 +10,7 @@ const $send = document.getElementById('send');
 
 const SESSION_KEY = 'n8n_chat_session_id';
 let sessionId = localStorage.getItem(SESSION_KEY) || '';
+let chatBlocked = false;
 
 function addMsg(text, who='bot', cls='') {
   const div = document.createElement('div');
@@ -135,6 +136,24 @@ function linkifyText(text) {
 function setBusy(b) {
   $send.disabled = b;
   $input.disabled = b;
+  if (b) {
+    $send.textContent = '...';
+  } else {
+    $send.textContent = 'שליחה';
+  }
+}
+
+function blockChat() {
+  chatBlocked = true;
+  $send.disabled = true;
+  $input.disabled = true;
+  $input.placeholder = 'הצ\'ט נחסם. לשאלות נוספות פנו לרינה תורג\'מן 0542122331';
+  $send.textContent = 'חסום';
+  $send.style.backgroundColor = '#999';
+  $send.style.cursor = 'not-allowed';
+
+  // הוסף הודעת מערכת
+  addMsg('🚫 הצ\'ט נחסם עקב שאלות שאינן קשורות ליום הבוגר. לשאלות נוספות ניתן לפנות לרינה תורג\'מן 0542122331', 'system');
 }
 
 async function askN8n(text) {
@@ -219,6 +238,12 @@ $form.addEventListener('submit', async (e) => {
   const text = ($input.value || '').trim();
   if (!text) return;
 
+  // בדוק אם הצ'ט חסום
+  if (chatBlocked) {
+    addMsg('🚫 הצ\'ט חסום. לשאלות נוספות ניתן לפנות לרינה תורג\'מן 0542122331', 'system');
+    return;
+  }
+
   addMsg(text, 'user');
   $input.value = '';
   setBusy(true);
@@ -236,9 +261,22 @@ $form.addEventListener('submit', async (e) => {
 
     // וודא שיש תגובה לפני הוספה
     if (reply && reply.trim()) {
-      // נקה HTML שבור לפני הצגה
-      const cleanReply = cleanBrokenHTML(reply);
-      addMsg(cleanReply, 'bot');
+      // בדוק אם יש פקודת חסימה
+      if (reply.includes('{"block_chat": true}')) {
+        // הסר את הפקודה מהטקסט
+        const cleanReply = reply.replace(/\{"block_chat":\s*true\}/g, '').trim();
+        if (cleanReply) {
+          addMsg(cleanBrokenHTML(cleanReply), 'bot');
+        }
+        // חסום את הצ'ט
+        setTimeout(() => {
+          blockChat();
+        }, 1000); // המתן שנייה כדי שהמשתמש יראה את ההודעה
+      } else {
+        // נקה HTML שבור לפני הצגה
+        const cleanReply = cleanBrokenHTML(reply);
+        addMsg(cleanReply, 'bot');
+      }
     } else {
       addMsg('מצטערים, לא קיבלתי תגובה מהשרת. נסו שוב.', 'system');
     }

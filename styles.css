@@ -185,6 +185,19 @@ main { flex: 1; display: flex; }
   box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
   color: white;
 }
+
+/* עיצוב לצ'ט חסום */
+.composer button:disabled {
+  background-color: #999 !important;
+  cursor: not-allowed !important;
+  opacity: 0.6;
+}
+
+.composer textarea:disabled {
+  background-color: #f5f5f5;
+  color: #999;
+  cursor: not-allowed;
+}
 .message.user {
   margin-left: auto;
   background: var(--user-bubble);

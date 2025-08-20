@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>בדיקת חסימת צ'ט</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>בדיקת מערכת חסימת צ'ט</h1>
+        
+        <div class="test-section">
+            <h3>סימולציה של תגובה עם פקודת חסימה:</h3>
+            <button onclick="simulateBlockResponse()">סמלץ תגובה חוסמת</button>
+        </div>
+        
+        <div class="test-section">
+            <h3>בדיקת מצב הצ'ט:</h3>
+            <div id="chat-status">הצ'ט פעיל</div>
+            <button onclick="checkChatStatus()">בדוק מצב</button>
+        </div>
+        
+        <div class="test-section">
+            <h3>צ'ט לבדיקה:</h3>
+            <div class="chat">
+                <div id="test-messages" class="messages"></div>
+                <form id="test-composer" class="composer">
+                    <textarea id="test-input" rows="2" placeholder="כתבו כאן..."></textarea>
+                    <button id="test-send" type="submit">שליחה</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // משתנים גלובליים לבדיקה
+        let testChatBlocked = false;
+        
+        function simulateBlockResponse() {
+            const blockResponse = 'מצטערת, אבל אני יכולה לעזור רק עם הרשמה ליום הבוגר. הצ\'ט ייחסם כעת. לשאלות אחרות ניתן לפנות לרינה תורג\'מן 0542122331\n\n{"block_chat": true}';
+            
+            console.log('תגובה מדומה:', blockResponse);
+            
+            // בדוק אם יש פקודת חסימה
+            if (blockResponse.includes('{"block_chat": true}')) {
+                const cleanReply = blockResponse.replace(/\{"block_chat":\s*true\}/g, '').trim();
+                addTestMsg(cleanReply, 'bot');
+                
+                setTimeout(() => {
+                    blockTestChat();
+                }, 1000);
+            }
+        }
+        
+        function addTestMsg(text, who = 'bot') {
+            const div = document.createElement('div');
+            div.className = `message ${who}`;
+            div.textContent = text;
+            document.getElementById('test-messages').appendChild(div);
+            
+            // גלילה למטה
+            const messages = document.getElementById('test-messages');
+            messages.scrollTop = messages.scrollHeight;
+        }
+        
+        function blockTestChat() {
+            testChatBlocked = true;
+            const input = document.getElementById('test-input');
+            const button = document.getElementById('test-send');
+            
+            input.disabled = true;
+            button.disabled = true;
+            input.placeholder = 'הצ\'ט נחסם. לשאלות נוספות פנו לרינה תורג\'מן 0542122331';
+            button.textContent = 'חסום';
+            button.style.backgroundColor = '#999';
+            button.style.cursor = 'not-allowed';
+            
+            addTestMsg('🚫 הצ\'ט נחסם עקב שאלות שאינן קשורות ליום הבוגר. לשאלות נוספות ניתן לפנות לרינה תורג\'מן 0542122331', 'system');
+            
+            updateChatStatus();
+        }
+        
+        function checkChatStatus() {
+            updateChatStatus();
+        }
+        
+        function updateChatStatus() {
+            const statusDiv = document.getElementById('chat-status');
+            if (testChatBlocked) {
+                statusDiv.textContent = '🚫 הצ\'ט חסום';
+                statusDiv.style.color = 'red';
+            } else {
+                statusDiv.textContent = '✅ הצ\'ט פעיל';
+                statusDiv.style.color = 'green';
+            }
+        }
+        
+        // הוסף מאזין לטופס הבדיקה
+        document.getElementById('test-composer').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const input = document.getElementById('test-input');
+            const text = input.value.trim();
+            
+            if (!text) return;
+            
+            if (testChatBlocked) {
+                addTestMsg('🚫 הצ\'ט חסום. לשאלות נוספות ניתן לפנות לרינה תורג\'מן 0542122331', 'system');
+                return;
+            }
+            
+            addTestMsg(text, 'user');
+            input.value = '';
+            
+            // תגובה אוטומטית
+            setTimeout(() => {
+                addTestMsg('זוהי תגובה לבדיקה. לחצו על "סמלץ תגובה חוסמת" כדי לבדוק חסימה.', 'bot');
+            }, 500);
+        });
+        
+        // אתחול
+        updateChatStatus();
+    </script>
+    
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            color: #333;
+        }
+        
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        button {
+            background: var(--brand-green);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        
+        button:hover {
+            background: var(--brand-green-dark);
+        }
+        
+        #chat-status {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .chat {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        #test-messages {
+            height: 200px;
+            overflow-y: auto;
+            padding: 10px;
+            background: #f9f9f9;
+        }
+    </style>
+</body>
+</html>
