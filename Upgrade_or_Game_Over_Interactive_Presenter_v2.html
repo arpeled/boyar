@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="he">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Upgrade or Game Over - AI Presentation</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&amp;family=Rubik:wght@400;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
+<style>
+        /* 1. THE SETUP */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #020617; /* Very dark blue/black */
+            background-image:
+                    radial-gradient(circle at 15% 50%, rgba(56, 189, 248, 0.05), transparent 25%),
+                    radial-gradient(circle at 85% 30%, rgba(168, 85, 247, 0.05), transparent 25%);
+            display: grid;
+            gap: 40px;
+            grid-template-columns: 1fr;
+            margin: 0;
+            min-height: 100vh;
+            padding: 40px 0;
+            place-items: center;
+        }
+
+        .slide-container {
+            align-items: center;
+            background-color: #0f172a; /* Slate 900 */
+            border-radius: 16px;
+            border: 1px solid #1e293b;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(56, 189, 248, 0.05);
+            display: flex;
+            flex-direction: column;
+            font-family: 'Heebo', sans-serif;
+            height: 720px;
+            justify-content: center;
+            overflow: hidden;
+            padding: 60px;
+            position: relative;
+            width: 1280px;
+        }
+
+        /* 1.1 BACKGROUND STYLING - Cyberpunk Grid */
+        .slide-container::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: linear-gradient(rgba(30, 41, 59, 0.3) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(30, 41, 59, 0.3) 1px, transparent 1px);
+            background-size: 30px 30px;
+            z-index: 0;
+            opacity: 0.5;
+        }
+
+        .slide-container > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 2. CONSISTENT TYPOGRAPHY */
+        .slide-container h1,
+        .slide-container h2,
+        .slide-container h3,
+        .slide-container .number {
+            font-family: 'Rubik', sans-serif;
+            margin: 0;
+        }
+
+        .slide-container h1 {
+            color: #f8fafc;
+            font-size: 85px;
+            font-weight: 900;
+            line-height: 1.1;
+            text-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+        }
+
+        .slide-container h2.slide-title {
+            color: #f8fafc;
+            font-size: 55px;
+            font-weight: 900;
+            margin-bottom: 40px;
+            text-align: right;
+            width: 100%;
+        }
+
+        .neon-cyan { color: #38BDF8; text-shadow: 0 0 10px rgba(56, 189, 248, 0.8); }
+        .neon-pink { color: #F43F5E; text-shadow: 0 0 10px rgba(244, 63, 94, 0.8); }
+        .neon-purple { color: #c084fc; text-shadow: 0 0 10px rgba(192, 132, 252, 0.8); }
+        .neon-green { color: #10b981; text-shadow: 0 0 10px rgba(16, 185, 129, 0.8); }
+
+        .slide-container p,
+        .slide-container li,
+        .slide-container .subtitle {
+            color: #cbd5e1;
+            font-family: 'Heebo', sans-serif;
+            font-size: 22px;
+            line-height: 1.6;
+        }
+
+        .slide-container .subtitle {
+            font-size: 26px;
+            font-weight: 400;
+            margin-top: 20px;
+            color: #94a3b8;
+        }
+
+        .slide-container .content-area {
+            align-items: center;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            justify-content: center;
+            width: 100%;
+        }
+
+        /* 3. LAYOUT DEFINITIONS */
+
+        /* Two Column & Image Right Text Left (Adapted for RTL) */
+        .two-column {
+            align-items: flex-start;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            width: 100%;
+        }
+
+        .two-column ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .two-column li {
+            margin-bottom: 25px;
+            padding-right: 35px;
+            position: relative;
+            font-size: 24px;
+        }
+
+        .two-column li::before {
+            content: '■';
+            color: #38BDF8;
+            text-shadow: 0 0 8px rgba(56, 189, 248, 0.8);
+            position: absolute;
+            right: 0;
+            top: 0px;
+            font-size: 20px;
+        }
+
+        .image-wrapper {
+            border-radius: 12px;
+            border: 2px solid #1e293b;
+            box-shadow: 0 0 25px rgba(192, 132, 252, 0.15);
+            height: 400px;
+            max-width: 100%;
+            overflow: hidden;
+            width: 100%;
+            position: relative;
+        }
+
+        /* Add a cyberpunk inner glow to images */
+        .image-wrapper::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+            pointer-events: none;
+        }
+
+        .image-wrapper img {
+            height: 100%;
+            max-width: 100%;
+            object-fit: cover;
+            width: 100%;
+        }
+
+        /* Bleed Image Layout (Adapted for RTL -> Image on left visually) */
+        .slide-container.bleed-image-layout {
+            align-items: start;
+            display: grid;
+            gap: 50px;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            padding: 0;
+        }
+
+        .slide-container.bleed-image-layout > .content-container {
+            padding: 60px 60px 60px 0; /* Adjusted for RTL */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .slide-container.bleed-image-layout > .image-container {
+            height: 100%;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .slide-container.bleed-image-layout img.bleed-image-side {
+            border-radius: 16px 0 0 16px; /* Adjusted for RTL */
+            display: block;
+            height: 720px;
+            object-fit: cover;
+            object-position: center;
+            width: 100%;
+            border-right: 3px solid #38BDF8;
+        }
+
+        .interactive-box {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px dashed #c084fc;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .interactive-box p {
+            color: #f8fafc;
+            font-weight: 700;
+            margin: 0;
+            font-size: 20px;
+        }
+
+        /* Tiled Text With Icons */
+        .tiled-content {
+            align-items: stretch;
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .tile {
+            align-items: center;
+            background-color: rgba(30, 41, 59, 0.6);
+            border-radius: 16px;
+            border: 1px solid #334155;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            justify-content: flex-start;
+            padding: 40px 30px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .tile:hover {
+            border-color: #38BDF8;
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
+        }
+
+        .tile .icon {
+            color: #38BDF8;
+            font-size: 55px;
+            margin-bottom: 25px;
+            text-shadow: 0 0 15px rgba(56, 189, 248, 0.5);
+        }
+
+        .tile h3 {
+            color: #f8fafc;
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+
+        .tile p {
+            font-size: 18px;
+        }
+
+        /* Interactive Game Grid (Man vs Machine) */
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            width: 100%;
+            padding: 10px;
+        }
+
+        .game-card {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid #1e293b;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            height: 220px;
+            transition: all 0.3s ease;
+        }
+
+        .game-card:hover {
+            border-color: #c084fc;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(192, 132, 252, 0.2);
+        }
+
+        .game-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .game-card .number-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px; /* RTL adjusted */
+            background: rgba(15, 23, 42, 0.8);
+            color: #fff;
+            font-family: 'Rubik', sans-serif;
+            font-size: 22px;
+            font-weight: bold;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            border: 2px solid #38BDF8;
+            z-index: 2;
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+        }
+
+        .game-card .reveal-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(15, 23, 42, 0.95);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 3;
+            pointer-events: none; /* Let clicks pass to parent */
+        }
+
+        .game-card.revealed .reveal-overlay {
+            opacity: 1;
+        }
+
+        .game-card .result-title {
+            font-family: 'Rubik', sans-serif;
+            font-size: 36px;
+            font-weight: 900;
+            margin-bottom: 5px;
+        }
+
+        .game-card .result-desc {
+            font-size: 16px;
+            text-align: center;
+            padding: 0 15px;
+            color: #cbd5e1;
+        }
+
+        /* Custom VS/Comparison Layout */
+        .vs-layout {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            gap: 30px;
+        }
+
+        .vs-side {
+            flex: 1;
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 16px;
+            padding: 30px;
+            position: relative;
+            border: 2px solid transparent;
+        }
+
+        .vs-side.lose {
+            border-color: #F43F5E;
+            box-shadow: inset 0 0 20px rgba(244, 63, 94, 0.1);
+        }
+
+        .vs-side.win {
+            border-color: #10b981;
+            box-shadow: inset 0 0 20px rgba(16, 185, 129, 0.1);
+            transform: scale(1.03); /* slight emphasis */
+        }
+
+        .vs-side h3 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .vs-side ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .vs-side ul li {
+            font-size: 22px;
+            margin-bottom: 15px;
+            padding-right: 30px;
+            position: relative;
+        }
+
+        .vs-side.lose ul li::before {
+            content: '▼';
+            color: #F43F5E;
+            position: absolute;
+            right: 0;
+            top: 2px;
+        }
+
+        .vs-side.win ul li::before {
+            content: '▲';
+            color: #10b981;
+            position: absolute;
+            right: 0;
+            top: 2px;
+        }
+
+        /* Area Chart Styles */
+        .area-chart-container {
+            padding: 10px;
+            width: 90%;
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 12px;
+            border: 1px solid #1e293b;
+        }
+
+        .area-chart-svg {
+            height: auto;
+            overflow: visible;
+            width: 100%;
+        }
+
+        .area-chart-svg .grid {
+            stroke-width: 1;
+            stroke: #334155;
+        }
+
+        .area-chart-svg .line-stroke {
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-width: 4;
+        }
+
+        .area-chart-svg .data-point {
+            fill: #0f172a;
+            stroke-width: 3;
+        }
+
+        .area-chart-svg .axis-labels {
+            fill: #94a3b8;
+            font-size: 16px;
+            font-family: 'Heebo', sans-serif;
+            font-weight: 500;
+        }
+
+        .area-chart-svg .y-axis-labels { text-anchor: end; }
+        .area-chart-svg .x-axis-labels { text-anchor: middle; }
+
+        /* Legend for Chart */
+        .chart-legend {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 10px;
+        }
+        .chart-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #f8fafc;
+            font-size: 18px;
+        }
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+
+        /* Full Background Image Layout */
+        .full-bg-image {
+            background-position: center;
+            background-size: cover;
+        }
+
+        .full-bg-image::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to top, rgba(15,23,42,1) 0%, rgba(15,23,42,0.4) 100%);
+            z-index: 0;
+        }
+
+        .full-bg-image .content-overlay {
+            text-align: center;
+            z-index: 2;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .full-bg-image h2 {
+            font-size: 100px;
+            color: #f8fafc;
+            text-shadow: 0 0 30px #F43F5E;
+            margin-bottom: 20px;
+        }
+
+        .full-bg-image p {
+            font-size: 32px;
+            color: #f8fafc;
+            font-weight: 700;
+            background: rgba(0,0,0,0.5);
+            padding: 10px 30px;
+            border-radius: 8px;
+            border: 1px solid #F43F5E;
+        }
+
+        /* Q&A Layout */
+        .qa-layout {
+            margin: 0 auto;
+            text-align: center;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .qa-layout h2 {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .qa-layout p {
+            font-size: 26px;
+            max-width: 800px;
+        }
+
+        .qa-image {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 4px solid #c084fc;
+            box-shadow: 0 0 30px rgba(192, 132, 252, 0.4);
+            margin-bottom: 40px;
+            object-fit: cover;
+        }
+
+        /* Custom Neon Button */
+        .neon-btn {
+            display: inline-block;
+            background: rgba(15, 23, 42, 0.6);
+            color: #f8fafc;
+            font-family: 'Heebo', sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            text-decoration: none;
+            padding: 15px 35px;
+            border: 2px solid #E1306C; /* Instagram pink/red */
+            border-radius: 30px;
+            box-shadow: 0 0 15px rgba(225, 48, 108, 0.4);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .neon-btn:hover {
+            background: #E1306C;
+            box-shadow: 0 0 25px rgba(225, 48, 108, 0.8);
+            transform: translateY(-3px);
+        }
+
+    
+#notes {
+  cursor: move;
+}
+</style>
+<style>
+/* === Deck overrides (single-slide presentation mode) === */
+html, body { height: 100%; }
+body{
+  padding: 0 !important;
+  margin: 0 !important;
+  display: block !important;
+  overflow: hidden !important;
+  background-color: #020617 !important;
+  background-image:
+      radial-gradient(circle at 15% 50%, rgba(56, 189, 248, 0.05), transparent 25%),
+      radial-gradient(circle at 85% 30%, rgba(168, 85, 247, 0.05), transparent 25%) !important;
+}
+#deck{
+  height: 100vh;
+  width: 100vw;
+  display: grid;
+  place-items: center;
+}
+.deck-slide{
+  display: none;
+}
+.deck-slide.active{
+  display: block;
+}
+/* scale slide to fit viewport */
+.slide-container{
+  transform-origin: center center;
+}
+#deck-ui{
+  position: fixed;
+  inset: auto 16px 16px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  z-index: 9999;
+  pointer-events: none;
+  font-family: 'Heebo', sans-serif;
+}
+.deck-ui-left, .deck-ui-right{
+  display:flex; align-items:center; gap:10px;
+  pointer-events: auto;
+}
+.deck-btn{
+  background: rgba(15, 23, 42, 0.75);
+  color: #f8fafc;
+  border: 1px solid #1e293b;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.35);
+}
+.deck-btn:hover{ border-color: #38BDF8; }
+.deck-pill{
+  background: rgba(15, 23, 42, 0.75);
+  color: #cbd5e1;
+  border: 1px solid #1e293b;
+  border-radius: 999px;
+  padding: 10px 14px;
+  font-weight: 700;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.35);
+  pointer-events: auto;
+}
+#progress{
+  height: 10px;
+  width: 240px;
+  background: rgba(30,41,59,0.55);
+  border: 1px solid #1e293b;
+  border-radius: 999px;
+  overflow: hidden;
+  pointer-events: auto;
+}
+#progress > div{
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, rgba(56,189,248,1), rgba(192,132,252,1), rgba(244,63,94,1));
+}
+/* Step-by-step reveals */
+.reveal-step{ opacity: 0; transform: translateY(6px); transition: opacity .25s ease, transform .25s ease; }
+.reveal-step.shown{ opacity: 1; transform: translateY(0); }
+
+/* Presenter notes overlay */
+#notes{
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  max-width: 980px;
+  margin: 0 auto;
+  background: rgba(2,6,23,0.92);
+  border: 1px solid rgba(56,189,248,0.35);
+  box-shadow: 0 0 30px rgba(56,189,248,0.15);
+  border-radius: 16px;
+  padding: 16px 18px;
+  z-index: 10000;
+  display: none;
+  color: #e2e8f0;
+  font-family: 'Heebo', sans-serif;
+}
+#notes h3{
+  margin: 0 0 8px 0;
+  font-family: 'Rubik', sans-serif;
+  color: #38BDF8;
+  font-size: 20px;
+}
+#notes pre{
+  margin: 0;
+  white-space: pre-wrap;
+  line-height: 1.55;
+  font-size: 16px;
+  color: #cbd5e1;
+}
+#notes .hint{
+  margin-top: 10px;
+  font-size: 13px;
+  color: #94a3b8;
+}
+</style></head>
+<body><div id="deck"><section class="deck-slide" data-index="1"><div class="slide-container bleed-image-layout" data-slide="1" id="slide1">
+<div class="content-container">
+<h1>Upgrade<br/>or <span class="neon-pink">Game Over</span></h1>
+<p class="subtitle">איך להפוך לגרסה 2.0 של עצמכם בעידן ה-AI.</p>
+<div class="interactive-box reveal-step" data-step="1">
+<p><i class="fa-solid fa-hand-paper" style="color: #c084fc; margin-left: 10px;"></i> תרימו יד: מי השתמש ב-ChatGPT ב-24 שעות האחרונות למשהו שהוא *לא* שיעורי בית?</p>
+</div>
+</div>
+<div class="image-container">
+<img alt="Cyberpunk retro gaming setup" class="bleed-image-side" src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&amp;fit=crop&amp;q=80&amp;w=800"/>
+</div>
+</div></section><section class="deck-slide" data-index="2"><div class="slide-container" data-slide="2" id="slide2">
+<h2 class="slide-title" style="text-align: center;">משחק שבירת קרח: <span class="neon-cyan">אדם או מכונה?</span></h2>
+<p style="text-align: center; margin-top: -20px; margin-bottom: 30px;">הצביעו - מי יצר את התמונה? <span class="neon-purple">לחצו על התמונה כדי לגלות את התשובה.</span></p>
+<div class="content-area">
+<div class="game-grid">
+<!-- Image 1 -->
+<div class="game-card" onclick="this.classList.toggle('revealed')">
+<div class="number-badge">1</div>
+<img alt="Realistic portrait" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&amp;fit=crop&amp;q=80&amp;w=600"/>
+<div class="reveal-overlay">
+<div class="result-title neon-pink">מכונה (AI)</div>
+<div class="result-desc">האישה הזו לא קיימת! מודלים חדשים מייצרים פגמי עור, שיער מבולגן ותאורה מציאותית שמטעה את העין.</div>
+</div>
+</div>
+<!-- Image 2 -->
+<div class="game-card" onclick="this.classList.toggle('revealed')">
+<div class="number-badge">2</div>
+<img alt="Surreal Mountain" src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&amp;fit=crop&amp;q=80&amp;w=600"/>
+<div class="reveal-overlay">
+<div class="result-title neon-green">אדם</div>
+<div class="result-desc">צילום אמיתי של הרים בשילוב חשיפה ארוכה לשמיים. המציאות לפעמים נראית כמו מדע בדיוני.</div>
+</div>
+</div>
+<!-- Image 3 -->
+<div class="game-card" onclick="this.classList.toggle('revealed')">
+<div class="number-badge">3</div>
+<img alt="Cozy Cafe" src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&amp;fit=crop&amp;q=80&amp;w=600"/>
+<div class="reveal-overlay">
+<div class="result-title neon-pink">מכונה (AI)</div>
+<div class="result-desc">החדר הזה לא קיים במציאות. ה-AI למד איך נראה בית קפה ויצר אחד מושלם כולל השתקפויות מדויקות בכוסות.</div>
+</div>
+</div>
+<!-- Image 4 -->
+<div class="game-card" onclick="this.classList.toggle('revealed')">
+<div class="number-badge">4</div>
+<img alt="Water Drops" src="https://images.unsplash.com/photo-1507608616759-54f48f0af0ee?auto=format&amp;fit=crop&amp;q=80&amp;w=600"/>
+<div class="reveal-overlay">
+<div class="result-title neon-green">אדם</div>
+<div class="result-desc">צילום מאקרו של טיפות מים על משטח. רמת הפירוט גורמת לזה להיראות כמו רינדור תלת-ממדי.</div>
+</div>
+</div>
+<!-- Image 5 -->
+<div class="game-card" onclick="this.classList.toggle('revealed')">
+<div class="number-badge">5</div>
+<img alt="Realistic cat" src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&amp;fit=crop&amp;q=80&amp;w=600"/>
+<div class="reveal-overlay">
+<div class="result-title neon-pink">מכונה (AI)</div>
+<div class="result-desc">חתול וירטואלי. בעבר, ה-AI התקשה עם רינדור של פרווה, היום הוא עושה את זה ברמת הפיקסל.</div>
+</div>
+</div>
+<!-- Image 6 -->
+<div class="game-card" onclick="this.classList.toggle('revealed')">
+<div class="number-badge">6</div>
+<img alt="Cyberpunk street" src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&amp;fit=crop&amp;q=80&amp;w=600"/>
+<div class="reveal-overlay">
+<div class="result-title neon-green">אדם</div>
+<div class="result-desc">נראה כמו יצירת סייברפאנק של מנוע משחק, אבל זהו צילום לילה אמיתי לגמרי תחת תאורת ניאון ברחובות אסיה.</div>
+</div>
+</div>
+</div>
+</div>
+</div></section><section class="deck-slide" data-index="3"><div class="slide-container" data-slide="3" id="slide3">
+<h2 class="slide-title">האשליה המושלמת: <span class="neon-purple">פגשו את מאי</span></h2>
+<div class="content-area">
+<div class="two-column">
+<div>
+<ul style="font-size: 22px;">
+<li class="reveal-step" data-step="1">זוהי <strong>מאי דיין</strong>. היא יוצרת תוכן, מעלה סטוריז כל יום מתל אביב, ויש לה עשרות אלפי עוקבים באינסטגרם.</li>
+<li class="reveal-step" data-step="2">אבל יש קאץ' אחד מטורף: <span class="neon-pink">היא לא קיימת.</span></li>
+<li class="reveal-step" data-step="3">היא 100% מודל וירטואלי. הפנים, הגוף, הבגדים, הלוקיישנים והטקסטים - הכל נוצר על ידי אדם אחד שיושב בבית עם כלי AI (Midjourney).</li>
+<li class="reveal-step" data-step="4">האדם הזה לא צריך להיות צלם או דוגמן – הוא פשוט <span class="neon-cyan">"הבמאי"</span> של החיים שלה, ואפילו סוגר לה קמפיינים מול מותגים אמיתיים!</li>
+</ul>
+<div style="margin-top: 40px; text-align: center;">
+<a class="neon-btn" href="https://www.instagram.com/mai_dayan" target="_blank">
+<i class="fa-brands fa-instagram"></i> פתחו באינסטגרם: mai_dayan@
+                    </a>
+</div>
+</div>
+<div>
+<div class="image-wrapper" style="border-color: #E1306C; background: #000; text-align: center;">
+<!-- Placeholder that mimics an influencer portrait -->
+<img alt="Realistic portrait of a young woman" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&amp;fit=crop&amp;q=80&amp;w=600" style="opacity: 0.85;"/>
+<div style="position: absolute; bottom: 20px; left: 20px; right: 20px; background: rgba(0,0,0,0.8); padding: 12px; border-radius: 12px; border: 1px solid #E1306C; display: flex; align-items: center; justify-content: center; gap: 10px;">
+<i class="fa-brands fa-instagram" style="color: #E1306C; font-size: 24px;"></i>
+<span style="color: #fff; font-family: 'Heebo', sans-serif; font-size: 20px; font-weight: bold;">mai_dayan 11.2K Followers</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div></section><section class="deck-slide" data-index="4"><div class="slide-container" data-slide="4" id="slide4">
+<h2 class="slide-title">המציאות: אל תהיו <span class="neon-pink">NPC</span></h2>
+<div class="content-area">
+<div class="two-column">
+<div>
+<ul>
+<li class="reveal-step" data-step="1">מכירים <strong>NPC</strong> (דמות רקע)? הם עושים את אותה הפעולה שוב ושוב, מחכים שיגידו להם מה לעשות, ואי אפשר לשחק איתם.</li>
+<li class="reveal-step" data-step="2">ה-AI נולד כדי <strong>להחליף עבודות של NPCs</strong>: להעתיק נתונים, לסכם טקסטים, לכתוב קוד גנרי.</li>
+<li class="reveal-step" data-step="3">בשוק העבודה החדש, אם תעשו רק את מה שלימדו אתכם – תהפכו ל-NPC ותישארו מאחור.</li>
+<li class="reveal-step" data-step="4">המטרה שלכם היא להיות <span class="neon-cyan">השחקן הראשי (Main Character)</span> – זה שמסתגל ומשתמש בכלים (AI) כדי להוביל.</li>
+</ul>
+</div>
+<div>
+<div class="image-wrapper">
+<img alt="Gamer holding controller with neon lights" src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&amp;fit=crop&amp;q=80&amp;w=800"/>
+</div>
+</div>
+</div>
+</div>
+</div></section><section class="deck-slide" data-index="5"><div class="slide-container" data-slide="5" id="slide4">
+<h2 class="slide-title">עדכוני גרסה בהיסטוריה: <span class="neon-purple">באגים שתוקנו</span></h2>
+<div class="content-area">
+<div class="two-column">
+<div>
+<ul style="font-size: 20px;">
+<li class="reveal-step" data-step="1"><strong>1900 - מוכרי קרח וסייסים:</strong> נעלמו כשהגיעו המקרר והמכונית. <br/><span class="neon-cyan">התוצאה:</span> נולדו מוסכניקים, מהנדסי רכב וחשמלאים.</li>
+<li class="reveal-step" data-step="2" style="margin-top: 15px;"><strong>1950 - מרכזניות טלפון:</strong> חיברו כבלים ידנית כדי שתוכלו לדבר. נעלמו עם המרכזיה האוטומטית. <br/><span class="neon-cyan">התוצאה:</span> נולדו מהנדסי תקשורת רשתות.</li>
+<li class="reveal-step" data-step="3" style="margin-top: 15px;"><strong>2010 - אנשי ספריות וידאו ומפות:</strong> נמחקו על ידי יוטיוב, סטרימינג ו-Waze. <br/><span class="neon-cyan">התוצאה:</span> מיליוני משרות חדשות של מפתחי אפליקציות ויוצרי תוכן.</li>
+<li class="reveal-step" data-step="4" style="margin-top: 15px;"><span class="neon-pink">החוק ההיסטורי:</span> טכנולוגיה לא "מעלימה" עבודה. היא מחליפה עבודה רובוטית בעבודה שדורשת יצירתיות ושליטה במכונות.</li>
+</ul>
+</div>
+<div>
+<div class="image-wrapper" style="border-color: #c084fc;">
+<img alt="Tech history hardware and circuits neon" src="https://images.unsplash.com/photo-1535223289827-42f1e9919769?auto=format&amp;fit=crop&amp;q=80&amp;w=800"/>
+</div>
+</div>
+</div>
+</div>
+</div></section><section class="deck-slide" data-index="6"><div class="slide-container" data-slide="6" id="slide5">
+<h2 class="slide-title">דו"ח הפורום הכלכלי העולמי 2025: <span class="neon-cyan">תחזית</span></h2>
+<p style="text-align: right; width: 100%; margin-top: -30px; margin-bottom: 20px; font-size: 20px;">
+        אילו מקצועות אקדמיים ו"יוקרתיים" הולכים להשתנות דרמטית לפי הנתונים החדשים?
+    </p>
+<div class="content-area">
+<div class="vs-layout">
+<!-- Down/Risk Side -->
+<div class="vs-side lose">
+<h3 class="neon-pink"><i class="fa-solid fa-arrow-trend-down"></i> Game Over (מצטמצמים)</h3>
+<p style="text-align: center; color: #94a3b8; font-size: 18px; margin-top: -10px; margin-bottom: 20px;">מקצועות "צווארון לבן" מבוססי מידע ושינון</p>
+<ul style="font-size: 20px;">
+<li class="reveal-step" data-step="1"><strong>עורכי דין מתחילים:</strong> AI קורא ומתמצת אלפי חוזים ופסקי דין בשניות.</li>
+<li class="reveal-step" data-step="2"><strong>מתכנתים בסיסיים (Junior):</strong> כתיבת קוד "שחור" עוברת לאוטומציה.</li>
+<li class="reveal-step" data-step="3"><strong>רואי חשבון פיננסיים:</strong> ביקורת ודוחות הופכים לאוטומטיים לחלוטין.</li>
+<li class="reveal-step" data-step="4"><strong>רופאים רדיולוגים (מפענחים):</strong> אלגוריתמים מזהים גידולים בצילומים בדיוק גבוה יותר.</li>
+<li class="reveal-step" data-step="5"><strong>אנליסטים פיננסיים:</strong> AI מנתח שווקים טוב ומהר יותר מבני אדם.</li>
+</ul>
+</div>
+<!-- Up/Growth Side -->
+<div class="vs-side win">
+<h3 class="neon-green"><i class="fa-solid fa-arrow-trend-up"></i> Level Up (מקצועות העתיד)</h3>
+<p style="text-align: center; color: #94a3b8; font-size: 18px; margin-top: -10px; margin-bottom: 20px;">מקצועות שדורשים אסטרטגיה, יצירתיות ואמפתיה (EQ)</p>
+<ul style="font-size: 20px;">
+<li class="reveal-step" data-step="6"><strong>אדריכלי תוכנה (Architects):</strong> מתכננים את המערכת והלוגיקה, לא רק מדפיסים קוד.</li>
+<li class="reveal-step" data-step="7"><strong>עורכי דין לאתיקה וטכנולוגיה:</strong> פותרים בעיות ש-AI יוצר (זכויות יוצרים, פרטיות).</li>
+<li class="reveal-step" data-step="8"><strong>מומחי ביואינפורמטיקה:</strong> משלבים רפואה ו-AI ליצירת תרופות מותאמות אישית.</li>
+<li class="reveal-step" data-step="9"><strong>מנתחי נתונים (Data Science):</strong> מושכים מסקנות עסקיות ממיליארדי נתונים.</li>
+<li class="reveal-step" data-step="10"><strong>פסיכולוגים ואנשי רפואה:</strong> AI לא יכול (עדיין) לתת חיבוק, להפגין אמפתיה או לנהל משבר נפשי.</li>
+</ul>
+</div>
+</div>
+</div>
+</div></section><section class="deck-slide" data-index="7"><div class="slide-container" data-slide="7" id="slide6">
+<h2 class="slide-title">כוח העל שלכם: <span class="neon-cyan">למידה מואצת</span></h2>
+<div class="content-area">
+<div class="two-column">
+<div>
+<ul>
+<li class="reveal-step" data-step="1">רוצים לבנות אפליקציה מחר בבוקר בלי לדעת שורת קוד? פעם זה דרש קורס של חצי שנה.</li>
+<li class="reveal-step" data-step="2">היום? אתם צריכים 20 דקות עם Claude או ChatGPT כדי לבנות אב-טיפוס עובד.</li>
+<li class="reveal-step" data-step="3">ה-AI הוא לא "פותר שיעורי בית" שגורם לכם להיות עצלנים – הוא המורה הפרטי הכי סבלני ומהיר בעולם.</li>
+</ul>
+<div class="interactive-box reveal-step" data-step="4" style="margin-top: 20px;">
+<p><i class="fa-solid fa-bolt" style="color: #38BDF8; margin-left: 10px;"></i> תזרקו נושא! מה תמיד רציתם ללמוד וחשבתם שזה מסובך מדי?</p>
+</div>
+</div>
+<div>
+<div class="image-wrapper" style="border-color: #38BDF8;">
+<img alt="Teenager wearing VR headset with neon lights" src="https://images.unsplash.com/photo-1592478411213-6153e4ebc07d?auto=format&amp;fit=crop&amp;q=80&amp;w=800"/>
+</div>
+</div>
+</div>
+</div>
+</div></section><section class="deck-slide" data-index="8"><div class="slide-container" data-slide="8" id="slide7">
+<h2 class="slide-title">יצירתיות היברידית: <span class="neon-purple">אתם הבמאים</span></h2>
+<div class="content-area">
+<div class="two-column">
+<div>
+<ul>
+<li class="reveal-step" data-step="1">יש מיתוס שה-AI יהרוג את היצירתיות. האמת? הוא <strong>מכפיל כוח</strong> יצירתי.</li>
+<li class="reveal-step" data-step="2">אתם לא חייבים לדעת לצייר, לכתוב מושלם או להלחין כדי ליצור פרויקט שלם. ה-AI הוא צוות ההפקה שלכם.</li>
+<li class="reveal-step" data-step="3">רוצים להיות יוטיוברים? ה-AI כותב תסריט, עורך וידאו, ומייצר סאונד.</li>
+<li class="reveal-step" data-step="4">אבל הניצוץ, הרעיון המקורי והחזון – <span class="neon-pink">חייבים להגיע מכם</span>.</li>
+</ul>
+</div>
+<div>
+<div class="image-wrapper" style="border-color: #c084fc;">
+<img alt="Robot working and futuristic technology concept" src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&amp;fit=crop&amp;q=80&amp;w=800"/>
+</div>
+</div>
+</div>
+</div>
+</div></section><section class="deck-slide" data-index="9"><div class="slide-container" data-slide="9" id="slide8">
+<h2 class="slide-title" style="text-align: center;">פעילות: <span class="neon-cyan">סטארט-אפ ב-5 דקות</span></h2>
+<p style="text-align: center; margin-top: -20px; margin-bottom: 40px;">איך לוקחים תשוקה, מחברים אותה ל-AI וממציאים מקצוע של העתיד?</p>
+<div class="content-area">
+<div class="tiled-content">
+<div class="tile">
+<div class="icon"><i class="fa-solid fa-gamepad"></i></div>
+<h3>גיימינג 2.0</h3>
+<p><strong>"חייט סקינים וירטואלי"</strong><br/>מעצב אופנה שמשתמש ב-AI כדי לייצר סקינים מטורפים ומותאמים אישית לשחקני פורטנייט, שנמכרים כ-NFT.</p>
+</div>
+<div class="tile">
+<div class="icon" style="color: #c084fc;"><i class="fa-solid fa-dumbbell"></i></div>
+<h3>ספורט חכם</h3>
+<p><strong>"מאמן תזונה ויזואלי"</strong><br/>אפליקציה (שבניתם לבד) שרק מבקשת מהמתאמן לצלם את המקרר שלו, ובונה לו תפריט אולימפי מאפס בעזרת AI.</p>
+</div>
+<div class="tile">
+<div class="icon" style="color: #F43F5E;"><i class="fa-solid fa-music"></i></div>
+<h3>מוזיקה אלגוריתמית</h3>
+<p><strong>"במאי פסקולים"</strong><br/>יוצר מוזיקה שלא יודע לקרוא תווים, אבל יודע לכתוב פרומפטים מדוייקים ל-AI כדי לייצר פסקולים אפיים לסרטי רשת.</p>
+</div>
+</div>
+</div>
+</div></section><section class="deck-slide" data-index="10"><div class="slide-container" data-slide="10" id="slide9">
+<h2 class="slide-title">ה-Mindset של <span class="neon-cyan">גרסה 2.0</span></h2>
+<div class="content-area" style="gap: 10px;">
+<!-- Legend -->
+<div class="chart-legend" style="margin-bottom: 5px;">
+<div class="chart-legend-item"><div class="legend-color" style="background: #38BDF8;"></div> שחקן ראשי (למידה מתמדת)</div>
+<div class="chart-legend-item"><div class="legend-color" style="background: #F43F5E;"></div> תלמיד NPC (למידה חד פעמית)</div>
+</div>
+<!-- Scaled Chart -->
+<div class="area-chart-container" dir="ltr" style="padding: 10px; width: 90%;">
+<svg class="area-chart-svg" viewbox="0 0 1000 260">
+<defs>
+<lineargradient id="gradient-upgrade" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" stop-opacity="0.6" style="stop-color:#38BDF8;"></stop>
+<stop offset="100%" stop-opacity="0.05" style="stop-color:#38BDF8;"></stop>
+</lineargradient>
+<lineargradient id="gradient-static" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" stop-opacity="0.6" style="stop-color:#F43F5E;"></stop>
+<stop offset="100%" stop-opacity="0.05" style="stop-color:#F43F5E;"></stop>
+</lineargradient>
+</defs>
+<!-- Grid -->
+<g class="grid">
+<line x1="0" x2="1000" y1="220" y2="220"></line>
+<line stroke-dasharray="5 5" x1="0" x2="1000" y1="160" y2="160"></line>
+<line stroke-dasharray="5 5" x1="0" x2="1000" y1="100" y2="100"></line>
+<line stroke-dasharray="5 5" x1="0" x2="1000" y1="40" y2="40"></line>
+</g>
+<!-- Static Learner Area (Red) -->
+<path class="area-fill" d="M 50 220 L 250 140 L 500 150 L 750 165 L 950 180 L 950 220 Z" style="fill:url(#gradient-static);"></path>
+<polyline class="line-stroke" points="50,220 250,140 500,150 750,165 950,180" style="stroke:#F43F5E;"></polyline>
+<circle class="data-point" cx="250" cy="140" r="6" style="stroke:#F43F5E;"></circle>
+<circle class="data-point" cx="950" cy="180" r="6" style="stroke:#F43F5E;"></circle>
+<!-- Upgraded Learner Area (Cyan) -->
+<path class="area-fill" d="M 50 220 L 250 120 L 500 70 L 750 30 L 950 15 L 950 220 Z" style="fill:url(#gradient-upgrade);"></path>
+<polyline class="line-stroke" points="50,220 250,120 500,70 750,30 950,15" style="stroke:#38BDF8;"></polyline>
+<circle class="data-point" cx="250" cy="120" r="6" style="stroke:#38BDF8;"></circle>
+<circle class="data-point" cx="500" cy="70" r="6" style="stroke:#38BDF8;"></circle>
+<circle class="data-point" cx="750" cy="30" r="6" style="stroke:#38BDF8;"></circle>
+<circle class="data-point" cx="950" cy="15" r="6" style="stroke:#38BDF8;"></circle>
+<!-- Axes Labels -->
+<g class="axis-labels x-axis-labels">
+<text x="50" y="250">כיתה י'</text>
+<text x="250" y="250">סיום תיכון</text>
+<text x="500" y="250">צבא/שירות</text>
+<text x="750" y="250">אוניברסיטה</text>
+<text x="950" y="250">קריירה</text>
+</g>
+<g class="axis-labels y-axis-labels">
+<text x="-15" y="45">High Skills</text>
+<text x="-15" y="225">Base</text>
+</g>
+</svg>
+</div>
+<!-- Explanations Below Chart -->
+<div style="width: 90%; display: flex; justify-content: space-between; gap: 20px; margin-top: 15px;">
+<div style="background: rgba(244, 63, 94, 0.1); border: 1px solid #F43F5E; padding: 15px; border-radius: 8px; flex: 1;">
+<h3 style="color: #F43F5E; margin-bottom: 5px; font-size: 22px;">הקו האדום (NPC)</h3>
+<p style="font-size: 18px; margin: 0;">למידה שמסתיימת בתואר. כשהטכנולוגיה משתנה, הידע מתיישן והערך בשוק העבודה צונח.</p>
+</div>
+<div style="background: rgba(56, 189, 248, 0.1); border: 1px solid #38BDF8; padding: 15px; border-radius: 8px; flex: 1;">
+<h3 style="color: #38BDF8; margin-bottom: 5px; font-size: 22px;">הקו התכלת (שחקן ראשי)</h3>
+<p style="font-size: 18px; margin: 0;">למידה מתמדת. שימוש ב-AI כדי ללמוד מהר, להסתגל לשינויים ולהמריא למעלה.</p>
+</div>
+</div>
+<p style="text-align: center; margin-top: 15px; font-size: 22px; font-weight: 700;">העתיד לא שייך למי ש<span class="neon-pink">יודע</span> הכי הרבה, אלא למי ש<span class="neon-cyan">לומד</span> הכי מהר.</p>
+</div>
+</div></section><section class="deck-slide" data-index="11"><div class="slide-container full-bg-image" data-slide="11" id="slide10" style="background-image: url('https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&amp;fit=crop&amp;q=80&amp;w=1600');">
+<div class="content-overlay">
+<h2>LEVEL UP?</h2>
+<p>הכדור בידיים שלכם. תתחילו לשדרג את עצמכם היום.</p>
+</div>
+</div></section><section class="deck-slide" data-index="12"><div class="slide-container" data-slide="12" id="slide11">
+<div class="qa-layout">
+<img alt="Glowing neon abstract shape" class="qa-image" src="https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&amp;fit=crop&amp;q=80&amp;w=400"/>
+<h2>מה ה-<span class="neon-cyan">Upgrade</span> שלכם?</h2>
+<p>זמן לשאלות, רעיונות ודיון חופשי.</p>
+<p style="margin-top: 30px; font-size: 20px; color: #94a3b8;">
+            *טיפ: נסו להשתמש בכלי AI היום כדי ללמוד משהו חדש לחלוטין שמסקרן אתכם.
+        </p>
+</div>
+</div></section></div>
+<div dir="rtl" id="deck-ui">
+<div class="deck-ui-left">
+<button class="deck-btn" id="prevBtn">◀ קודם</button>
+<button class="deck-btn" id="nextBtn">הבא ▶</button>
+<div aria-label="progress" id="progress"><div></div></div>
+</div>
+<div class="deck-ui-right">
+<div class="deck-pill" id="counter">שקף 1/1</div>
+<button class="deck-btn" id="fsBtn">מסך מלא</button>
+<button class="deck-btn" id="notesBtn">הערות (P)</button><button class="deck-btn" id="presenterBtn">Presenter View</button>
+</div>
+</div>
+<div dir="rtl" id="notes">
+<h3 id="notesTitle">הערות למרצה</h3>
+<pre id="notesBody"></pre>
+<div class="hint">קיצורים: ←/→ להחלפה | רווח/קליק: חשיפה/הבא | P: הערות | F: מסך מלא</div>
+</div>
+<script>
+(() => {
+  const slides = Array.from(document.querySelectorAll('.deck-slide'));
+  const counter = document.getElementById('counter');
+  const progressBar = document.querySelector('#progress > div');
+  const notesWrap = document.getElementById('notes');
+  const notesBody = document.getElementById('notesBody');
+  const notesTitle = document.getElementById('notesTitle');
+  const notesBtn = document.getElementById('notesBtn');
+
+  const NOTES = {"1": "שלום לכולם! היום אנחנו הולכים לדבר על העתיד שלכם. לא על העתיד של הרובוטים, אלא על העתיד שלכם.\nהשם של ההרצאה הוא Upgrade or Game Over, ויש לזה סיבה. אנחנו נמצאים ברגע בהיסטוריה שבו הכללים משתנים.\n\nשבירת קרח:\nתרימו יד - מי כאן השתמש ב-ChatGPT / Claude או בכל בינה מלאכותית אחרת ב-24 השעות האחרונות?\nהשתמשתם בזה בשביל שיעורי בית?\nמי השתמש בזה למשהו שהוא לא שיעורי בית? אולי כדי לכתוב ברכה, אולי כדי לתכנת משהו?\nמי שמשתמש בזה רק לשיעורי בית מפספס את הפואנטה. אנחנו כאן כדי לגלות איך משתמשים בזה כדי לקבל כוחות-על.", "2": "איך לתפעל:\nזה שקף תחרות. הראה להם את כל שש התמונות.\nמה להגיד:\nכדי להבין איפה הטכנולוגיה עומדת היום, בואו נראה אם אתם יכולים להבדיל בין מציאות לזיוף.\nאני אצביע על כל תמונה, ואתם תצביעו אם זה צולם במצלמה, או שזה נוצר מכלום על ידי AI.\n\nדגשים (אחרי שהם מצביעים):\n1 (האישה): נראית אמיתית? יש פגמים בעור! אבל… זו מכונה.\n2 (נוף): זה הטבע. צולם במצלמה.\n3 (בית קפה): רינדור מחשב. הכל פיקסלים.\n4 (כדורים פורחים): צילום אמיתי.\n5 (חתול): חתול וירטואלי.\n6 (רחוב ניאון): צילום אמיתי.\n\nפאנץ' ליין:\nהגבולות היטשטשו – צריך ביקורתיות מחשבתית.", "3": "מה להגיד:\nזאת מאי דיין. היא גרה בתל אביב, מעלה סטוריז, ומותגים משלמים לה.\nאבל יש פרט קטן אחד… היא לא בן אדם. היא שורת קוד.\n\nהפעלה:\nתוציאו טלפונים, תפתחו אינסטגרם וחפשו mai_dayan@.\nתסתכלו על תגובות — אנשים חושבים שהיא אמיתית.\n\nהדגשה:\nהיוצר הוא “הבמאי” שלה. מינוף: הרבה תוצאה עם מעט משאבים — רעיון טוב + פרומפטים נכונים.", "4": "מה להגיד:\nמי גיימר? מה זה NPC?\nדמות רקע שחוזרת על אותה פעולה ומחכה שיתנו לה משימה.\n\nפאנץ':\nAI מחליף עבודות של NPCs: העתקת נתונים, סיכום רובוטי, קוד גנרי.\nאם רק תשננו ותבצעו – תוחלפו. תהיו השחקן הראשי.", "5": "מה להגיד:\nאנחנו לא הראשונים שמפחדים מטכנולוגיה.\n\nשאלות קצרות לקהל:\n1900 – מי הביא קרח הביתה? למה איבד עבודה? (המקרר)\nמרכזניות טלפון? (מרכזיה אוטומטית)\nבלוקבסטר? (יוטיוב/נטפליקס)\n\nפאנץ':\nמקצועות נעלמו ונוצרו מקצועות חדשים וטובים יותר.\nAI = עדכון גרסה ענק. איפה אתם תהיו בעדכון הזה?", "6": "מה להגיד:\nהפורום הכלכלי העולמי הוציא דו״ח שמראה לאן הכסף הולך.\nמה מצטמצם ומה מתפוצץ מביקוש?\n\nהסבר:\nAI קורא/מתמצת מסמכים, מנתח מידע, מאבחן.\nאבל לא יכול אמפתיה/שכנוע/אסטרטגיה.\n\nפאנץ':\nמה שדורש רגש, יצירתיות, אסטרטגיה וניהול מכונות — זה העתיד.\nשינון ופלט רובוטי — ימות.", "7": "מה להגיד:\nAI מוריד את הרף להתחיל.\nפעם אתר דרש חצי שנה קוד. היום — עם פרומפט נכון, אתר ביום.\n\nהדגש:\nAI הוא מורה פרטי אישי: 24/7, סבלנות אינסופית.\nמי שינצח הוא מי שלומד כישור חדש הכי מהר.", "8": "מה להגיד:\nמיתוס: AI יהרוג יצירתיות.\nמציאות: AI מכפיל כוח יצירתי.\n\nדוגמה:\nיוצר תוכן שמשתמש ב-AI לכתיבה/עריכה/סאונד.\n\nדגש:\nהניצוץ והחזון חייבים להגיע מכם.", "9": "הפעלה:\n5 דקות עבודה!\nחלקו לזוגות/שלשות.\nקחו תחום שאתם אוהבים (ספורט/אופנה/בישול/גיימינג/מוזיקה) ותמציאו רעיון לסטארט-אפ שמשלב AI.\n\nאחרי 5 דקות:\nבחרו 2–3 קבוצות לפיץ' של דקה. יוצר דיון ושובר פרונטלי.", "10": "מה להגיד:\nבואו נבין הכל דרך הגרף.\nהקו האדום: תלמיד NPC — מפסיק ללמוד, הידע מתיישן, הקריירה נתקעת.\nהקו התכלת: שחקן ראשי — למידה מתמדת, משתמש ב-AI כדי להשתפר.\n\nפאנץ':\nהעתיד לא שייך למי שיודע הכי הרבה, אלא למי שלומד הכי מהר.", "11": "משפט סיום:\nהבחירה בידיים שלכם.\nאם תתעלמו ותעבדו כמו פעם — Game Over.\nאם תאמצו ותשתמשו ב-AI כמכפיל כוח — Level Up.\n\nואז שאלות:\nתשאירו כמה דקות לשאלות.\nמשימה להיום בערב: תבקשו מ-AI ללמד אתכם משהו חדש, לא שיעורי בית."};
+  const NOTES_MAP = {"1": 1, "2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7": 7, "8": 8, "9": 9, "10": 10, "11": 11, "12": 11};
+
+  let current = 0;
+
+  function fitSlide() {
+    const slide = slides[current].querySelector('.slide-container');
+    if (!slide) return;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const baseW = 1280;
+    const baseH = 720;
+    const scale = Math.min(vw / baseW, vh / baseH) * 0.95;
+    slide.style.transform = `scale(${scale})`;
+  }
+
+  function resetSteps(idx) {
+    const steps = slides[idx].querySelectorAll('.reveal-step');
+    steps.forEach(el => el.classList.remove('shown'));
+    slides[idx].dataset.step = '0';
+  }
+
+  function showSlide(i) {
+    if (i < 0 || i >= slides.length) return;
+    slides[current].classList.remove('active');
+    current = i;
+    slides[current].classList.add('active');
+
+    // reset reveals on entering a slide
+    resetSteps(current);
+
+    // UI
+    counter.textContent = `שקף ${current+1}/${slides.length}`;
+    progressBar.style.width = `${((current+1)/slides.length)*100}%`;
+
+    // Notes
+    const mapped = NOTES_MAP[current+1] || (current+1);
+    const titleText = slides[current].querySelector('h1, h2')?.textContent?.trim() || `שקף ${current+1}`;
+    notesTitle.textContent = `הערות למרצה — ${titleText}`;
+    notesBody.textContent = NOTES[mapped] || 'אין הערות לשקף הזה.';
+
+    fitSlide();
+    history.replaceState(null, '', `#slide${current+1}`);
+  }
+
+  function revealNextStepOrAdvance() {
+    const stepNow = parseInt(slides[current].dataset.step || '0', 10);
+    const steps = Array.from(slides[current].querySelectorAll('.reveal-step'))
+      .sort((a,b) => (parseInt(a.dataset.step||'0') - parseInt(b.dataset.step||'0')));
+
+    const next = steps.find(el => parseInt(el.dataset.step||'0') === stepNow + 1);
+    if (next) {
+      next.classList.add('shown');
+      slides[current].dataset.step = String(stepNow + 1);
+      return;
+    }
+    // If no more steps, go next slide
+    showSlide(current + 1);
+  }
+
+  function prevSlide() {
+    showSlide(current - 1);
+  }
+
+  // Buttons
+  document.getElementById('nextBtn').addEventListener('click', (e) => { e.stopPropagation(); revealNextStepOrAdvance(); });
+  document.getElementById('prevBtn').addEventListener('click', (e) => { e.stopPropagation(); prevSlide(); });
+  document.getElementById('fsBtn').addEventListener('click', async (e) => {
+    e.stopPropagation();
+    if (!document.fullscreenElement) {
+      await document.documentElement.requestFullscreen().catch(() => {});
+    } else {
+      await document.exitFullscreen().catch(() => {});
+    }
+    setTimeout(fitSlide, 150);
+  });
+  function toggleNotes(e) {
+    if (e) e.stopPropagation();
+    notesWrap.style.display = (notesWrap.style.display === 'block') ? 'none' : 'block';
+  }
+  notesBtn.addEventListener('click', toggleNotes);
+
+  // Click anywhere advances (like PowerPoint) — but ignore clicks inside interactive game cards and links/buttons
+  document.addEventListener('click', (e) => {
+    const t = e.target;
+    if (t.closest('.game-card')) return; // game uses clicks
+    if (t.closest('a, button')) return;
+    revealNextStepOrAdvance();
+  });
+
+  // Keyboard
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); revealNextStepOrAdvance(); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); prevSlide(); }
+    if (e.key.toLowerCase() === 'p') toggleNotes(e);
+    if (e.key.toLowerCase() === 'f') document.getElementById('fsBtn').click();
+  });
+
+  window.addEventListener('resize', fitSlide);
+
+  // Start at hash if present
+  const m = location.hash.match(/slide(\d+)/);
+  const start = m ? Math.max(1, Math.min(slides.length, parseInt(m[1],10))) : 1;
+  slides.forEach(s => s.classList.remove('active'));
+  slides[start-1].classList.add('active');
+  showSlide(start-1);
+})();
+</script><script>
+(function() {
+  const notes = document.getElementById('notes');
+  let isDragging = false;
+  let offsetX = 0;
+  let offsetY = 0;
+
+  notes.addEventListener('mousedown', function(e) {
+    isDragging = true;
+    offsetX = e.clientX - notes.offsetLeft;
+    offsetY = e.clientY - notes.offsetTop;
+    notes.style.position = 'fixed';
+  });
+
+  document.addEventListener('mousemove', function(e) {
+    if (!isDragging) return;
+    notes.style.left = (e.clientX - offsetX) + 'px';
+    notes.style.top = (e.clientY - offsetY) + 'px';
+  });
+
+  document.addEventListener('mouseup', function() {
+    isDragging = false;
+  });
+})();
+</script>
+<script>
+/* === Proper Presenter View === */
+let presenterWindow = null;
+
+function openPresenterView() {
+  if (presenterWindow && !presenterWindow.closed) {
+    presenterWindow.focus();
+    return;
+  }
+
+  presenterWindow = window.open("", "PresenterView", "width=1000,height=700");
+
+  presenterWindow.document.write(`
+    <html dir="rtl" lang="he">
+    <head>
+      <title>Presenter View</title>
+      <style>
+        body { margin:0; padding:30px; background:#020617; color:#e2e8f0; font-family: Heebo, sans-serif; }
+        h2 { color:#38BDF8; font-family: Rubik, sans-serif; }
+        pre { white-space: pre-wrap; line-height:1.7; font-size:20px; }
+      </style>
+    </head>
+    <body>
+      <h2 id="pTitle"></h2>
+      <pre id="pNotes"></pre>
+    </body>
+    </html>
+  `);
+
+  presenterWindow.document.close();
+  syncPresenter();
+}
+
+function syncPresenter() {
+  if (!presenterWindow || presenterWindow.closed) return;
+
+  const title = document.getElementById("notesTitle")?.textContent || "";
+  const body = document.getElementById("notesBody")?.textContent || "";
+
+  presenterWindow.document.getElementById("pTitle").textContent = title;
+  presenterWindow.document.getElementById("pNotes").textContent = body;
+}
+
+// Hook after slide change by observing notes change
+const observer = new MutationObserver(syncPresenter);
+observer.observe(document.getElementById("notesBody"), { childList: true });
+
+document.addEventListener("DOMContentLoaded", function() {
+  const btn = document.getElementById("presenterBtn");
+  if (btn) {
+    btn.addEventListener("click", function(e){
+      e.stopPropagation();
+      openPresenterView();
+    });
+  }
+});
+</script>
+
+</body>
+</html>
